@@ -351,17 +351,18 @@ namespace Argus
                         new XAttribute("characterID", pilot.characterID),
                         new XAttribute("name", pilot.name),
                         new XAttribute("corporationID", pilot.corporationID),
-                        new XAttribute("corporationName", pilot.corporationName),
-                            new XElement("skills"),
-                            new XElement("titles")));
+                        new XAttribute("corporationName", pilot.corporationName)
+                        ));
                 IEnumerable<XElement> children = from el in UpdateDataSheet.Root.Elements("pilot")
-                                                 where (string)el.Attribute("characterID").Value == pilot.characterID.ToString()
+                                                 where (string)el.Attribute("characterID") == pilot.characterID.ToString()
                                                  select el;
                 foreach (XElement el in children)
                 {
+                    el.Add(new XElement("skills"));
+                    el.Add(new XElement("titles"));
                     foreach (CharacterSheet.CharacterSkills skill in pilot.skills)
                     {
-                        UpdateDataSheet.Element("characters").Element("pilot").Element("skills").Add(
+                        el.Element("skills").Add(
                             new XElement("skill",
                                 new XAttribute("typeID", skill.typeID),
                                 new XAttribute("skillpoints", skill.skillpoints),
@@ -370,7 +371,7 @@ namespace Argus
                     }
                     foreach (CharacterSheet.CharacterTitles title in pilot.titles)
                     {
-                        UpdateDataSheet.Element("characters").Element("pilot").Element("titles").Add(
+                        el.Element("titles").Add(
                             new XElement("skill",
                                 new XAttribute("titleID", title.titleID),
                                 new XAttribute("titleName", title.titleName)));
