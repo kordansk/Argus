@@ -11,7 +11,6 @@ namespace Argus
         public string name { get; set; }
         public long corporationID { get; set; }
         public string corporationName { get; set; }
-        public DateTime cachedUntil { get; set; }
         public List<CharacterSkills> skills { get; set; }
         public List<CharacterTitles> titles { get; set; }
         public string keyID { get; set; }

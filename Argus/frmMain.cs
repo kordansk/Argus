@@ -40,8 +40,6 @@ namespace Argus
         }
         private void LoadFormData()
         {
-            UserInfoList.RemoveRange(0, UserInfoList.Count);
-            CorporationDataXML.RemoveRange(0, CorporationDataXML.Count);
             if (File.Exists(UserDataLocalXML))
             {
                 XElement xUserData;
@@ -59,7 +57,7 @@ namespace Argus
                 foreach (UserData user in UserInfoList)
                 {
                     LoadCorpData(user.corp_corpdata_xml);
-                }
+                }                
             }
             else
             {
@@ -67,7 +65,7 @@ namespace Argus
             }
             if (File.Exists(EveSkillsLocalXML))
             {
-                EveSkillsXML = LoadEveSkills.GetSkills(EveSkillsLocalXML);
+                EveSkillsXML = LoadEveSkills.GetSkills(EveSkillsLocalXML);                
             }
             else
             {
@@ -339,17 +337,40 @@ namespace Argus
                         temp_titles));
                 }
             }
-
+            foreach (CharacterSheet character in list_updatechars)
+            {
+                listMainView.Items.Add(character.name);
+            }
             //Updating the datasheet.xml file here
-           
+            
             XDocument UpdateDataSheet = XDocument.Load(CharacterDataXML);
-            foreach (CharacterSheet pilot in 
-            UpdateDataSheet.Root.Element("characters").Add(new XElement("pilot",
-                new XAttribute("characterID", tb_CorpKeyID.Text),
-                new XAttribute("name", tb_Corp_vCode.Text),
-                new XAttribute("corporationID", corpdataFileName),
-                new XAttribute("corporationName", corpdataFileName)));
-            UpdateDataSheet.Save(UserDataLocalXML);
+            foreach (CharacterSheet pilot in list_updatechars)
+            {
+                UpdateDataSheet.Element("characters").Add(new XElement("pilot",
+                    new XAttribute("characterID", pilot.characterID),
+                    new XAttribute("name", pilot.name),
+                    new XAttribute("corporationID", pilot.corporationID),
+                    new XAttribute("corporationName", pilot.corporationName),
+                        new XElement("skills"),
+                        new XElement("titles")));
+                foreach (CharacterSheet.CharacterSkills skill in pilot.skills)
+                {
+                    UpdateDataSheet.Element("characters").Element("pilot").Element("skills").Add(
+                        new XElement("skill",
+                            new XAttribute("typeID", skill.typeID),
+                            new XAttribute("skillpoints", skill.skillpoints),
+                            new XAttribute("level", skill.level),
+                            new XAttribute("name", skill.name)));
+                }
+                foreach (CharacterSheet.CharacterTitles title in pilot.titles)
+                {
+                    UpdateDataSheet.Element("characters").Element("pilot").Element("titles").Add(
+                        new XElement("skill",
+                            new XAttribute("titleID", title.titleID),
+                            new XAttribute("titleName", title.titleName)));
+                }
+            }
+            UpdateDataSheet.Save(CharacterDataXML);
             
 
 
@@ -452,10 +473,6 @@ namespace Argus
         }
         private void RefreshData()
         {
-            foreach (CorpData corp in CorporationDataXML)
-            {
-                listMainView.Items.Add(corp.corporationTicker);
-            }
 
         } //refreshes listbox
     }
