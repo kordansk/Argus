@@ -341,18 +341,47 @@ namespace Argus
             {
                 listMainView.Items.Add(character.name);
             }
-            //Updating the datasheet.xml file here
+            //Adding or Updating the datasheet.xml file here
             
             XDocument UpdateDataSheet = XDocument.Load(CharacterDataXML);
             foreach (CharacterSheet pilot in list_updatechars)
             {
-                UpdateDataSheet.Element("characters").Add(new XElement("pilot",
-                    new XAttribute("characterID", pilot.characterID),
-                    new XAttribute("name", pilot.name),
-                    new XAttribute("corporationID", pilot.corporationID),
-                    new XAttribute("corporationName", pilot.corporationName),
-                        new XElement("skills"),
-                        new XElement("titles")));
+                UpdateDataSheet.Element("characters").Add(
+                    new XElement("pilot",
+                        new XAttribute("characterID", pilot.characterID),
+                        new XAttribute("name", pilot.name),
+                        new XAttribute("corporationID", pilot.corporationID),
+                        new XAttribute("corporationName", pilot.corporationName),
+                            new XElement("skills"),
+                            new XElement("titles")));
+                IEnumerable<XElement> children = from el in UpdateDataSheet.Root.Elements("pilot")
+                                                 where (string)el.Attribute("characterID").Value == pilot.characterID.ToString()
+                                                 select el;
+                foreach (XElement el in children)
+                {
+                    foreach (CharacterSheet.CharacterSkills skill in pilot.skills)
+                    {
+                        UpdateDataSheet.Element("characters").Element("pilot").Element("skills").Add(
+                            new XElement("skill",
+                                new XAttribute("typeID", skill.typeID),
+                                new XAttribute("skillpoints", skill.skillpoints),
+                                new XAttribute("level", skill.level),
+                                new XAttribute("name", skill.name)));
+                    }
+                    foreach (CharacterSheet.CharacterTitles title in pilot.titles)
+                    {
+                        UpdateDataSheet.Element("characters").Element("pilot").Element("titles").Add(
+                            new XElement("skill",
+                                new XAttribute("titleID", title.titleID),
+                                new XAttribute("titleName", title.titleName)));
+                    }
+                }
+            }
+            UpdateDataSheet.Save(CharacterDataXML);
+            
+            /*
+            foreach (CharacterSheet pilot in list_updatechars)
+            {
                 foreach (CharacterSheet.CharacterSkills skill in pilot.skills)
                 {
                     UpdateDataSheet.Element("characters").Element("pilot").Element("skills").Add(
@@ -371,6 +400,8 @@ namespace Argus
                 }
             }
             UpdateDataSheet.Save(CharacterDataXML);
+            */
+            
             
 
 
