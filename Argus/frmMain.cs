@@ -20,7 +20,7 @@ namespace Argus
         public List<CharacterSheet> EveCharactersList = new List<CharacterSheet>();
         public List<UserData> UserInfoList = new List<UserData>();
         public List<ListItem> CorpDropDownList = new List<ListItem>();
-        public BindingList<CharacterView> CharacterDataGrid = new BindingList<CharacterView>();
+        public List<CharacterView> CharacterDataGrid = new List<CharacterView>();
         public string CorpFileXML;    
         public string CharacterDataXML = "datasheet.xml";  
         public string EveSkillsLocalXML = "skilldata.xml";
@@ -48,7 +48,7 @@ namespace Argus
             List<ImportedData> emptyCSVList = new List<ImportedData>();
             List<ListItem> emptyCorpDropDownList = new List<ListItem>();
             List<UserData> emptyUserInfoList = new List<UserData>();
-            BindingList<CharacterView> emptyCharacterDataGrid = new BindingList<CharacterView>();
+            List<CharacterView> emptyCharacterDataGrid = new List<CharacterView>();
             EveCharactersList = emptyEveCharactersList;
             CorporationDataList = emptyCorporationDataList;
             EveSkillList = emptyEveSkillList;
@@ -109,7 +109,12 @@ namespace Argus
             }
             if (File.Exists(CharacterDataXML))
             {
-                LoadLocalDataSheet();                
+                LoadLocalDataSheet();
+                foreach (CharacterSheet item in EveCharactersList)
+                {
+                    listMainView.Items.Add(item.name + "\t" + item.forumName);
+                }
+            
             }
             else
             {
@@ -118,7 +123,8 @@ namespace Argus
                 CreateDatasheetXML.Add(DatasheetRoot);
                 CreateDatasheetXML.Save(CharacterDataXML); 
             }
-            
+
+            /*
             _dgMainView.DataSource = CharacterDataGrid;
             _dgMainView.AutoGenerateColumns = false;
             DataGridViewTextBoxColumn ownerColumn = new DataGridViewTextBoxColumn();
@@ -136,14 +142,19 @@ namespace Argus
             DataGridViewTextBoxColumn logoffdateColumn = new DataGridViewTextBoxColumn();
             logoffdateColumn.DataPropertyName = "logoffDateTime";
             logoffdateColumn.HeaderText = "Last Time Logged In";
+            */
+
             foreach (CharacterSheet pilot in EveCharactersList)
             {
                 CorpData this_pilots_corp = CorporationDataList.Find(delegate(CorpData s) { return s.corporationID == pilot.corporationID; });
                 CorpData.Member this_pilots_corp_name = this_pilots_corp.memberList.Find(delegate (CorpData.Member s) {return s.characterID == pilot.characterID; });
-                
-                
+                //CharacterDataGrid.Add(new CharacterView(pilot.name, pilot.corporationName, pilot.forumName, this_pilots_corp_name.startDateTime, this_pilots_corp_name.logoffDateTime, pilot.skills, pilot.titles));
             }
-
+            //_dgMainView.DataSource = CharacterDataGrid;
+            foreach (CharacterSheet item in EveCharactersList)
+            {
+                listMainView.Items.Add(item.name + "\t" + item.forumName);
+            }
             
         }
         private void LoadCorpData(string file)

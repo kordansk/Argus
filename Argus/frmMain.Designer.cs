@@ -65,9 +65,9 @@
             // listMainView
             // 
             this.listMainView.FormattingEnabled = true;
-            this.listMainView.Location = new System.Drawing.Point(477, 359);
+            this.listMainView.Location = new System.Drawing.Point(357, 86);
             this.listMainView.Name = "listMainView";
-            this.listMainView.Size = new System.Drawing.Size(308, 147);
+            this.listMainView.Size = new System.Drawing.Size(428, 420);
             this.listMainView.TabIndex = 1;
             // 
             // btn_AddCorp
@@ -232,7 +232,7 @@
             this._dgMainView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this._dgMainView.Location = new System.Drawing.Point(6, 6);
             this._dgMainView.Name = "_dgMainView";
-            this._dgMainView.Size = new System.Drawing.Size(270, 133);
+            this._dgMainView.Size = new System.Drawing.Size(271, 290);
             this._dgMainView.TabIndex = 3;
             // 
             // frmMain

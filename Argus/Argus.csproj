@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterSheet.cs" />
+    <Compile Include="CharacterView.cs" />
     <Compile Include="ListItem.cs" />
     <Compile Include="UserData.cs" />
     <Compile Include="SkillSheet.cs" />
