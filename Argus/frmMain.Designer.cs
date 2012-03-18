@@ -35,15 +35,16 @@
             this.tabMain = new System.Windows.Forms.TabPage();
             this.btn_RefreshList = new System.Windows.Forms.Button();
             this.tabSettings = new System.Windows.Forms.TabPage();
+            this.lbl_CorpNameRemove = new System.Windows.Forms.Label();
+            this.btnRemoveCorp = new System.Windows.Forms.Button();
+            this.cbRemoveCorp = new System.Windows.Forms.ComboBox();
             this.btn_UpdateCorpDataXML = new System.Windows.Forms.Button();
             this.btn_UpdateSkillTree = new System.Windows.Forms.Button();
             this.lbl_Corp_vCode = new System.Windows.Forms.Label();
             this.lbl_CorpKeyID = new System.Windows.Forms.Label();
-            this.cb_LockCorpUpdate = new System.Windows.Forms.CheckBox();
+            this.cb_LockAddCorporation = new System.Windows.Forms.CheckBox();
             this.tb_Corp_vCode = new System.Windows.Forms.TextBox();
             this.tb_CorpKeyID = new System.Windows.Forms.TextBox();
-            this.cbRemoveCorp = new System.Windows.Forms.ComboBox();
-            this.btnRemoveCorp = new System.Windows.Forms.Button();
             this.tabcontrol_Main.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSettings.SuspendLayout();
@@ -96,7 +97,7 @@
             this.tabMain.Padding = new System.Windows.Forms.Padding(3);
             this.tabMain.Size = new System.Drawing.Size(802, 512);
             this.tabMain.TabIndex = 0;
-            this.tabMain.Text = "tabPage1";
+            this.tabMain.Text = "Main View";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
             // btn_RefreshList
@@ -111,13 +112,14 @@
             // 
             // tabSettings
             // 
+            this.tabSettings.Controls.Add(this.lbl_CorpNameRemove);
             this.tabSettings.Controls.Add(this.btnRemoveCorp);
             this.tabSettings.Controls.Add(this.cbRemoveCorp);
             this.tabSettings.Controls.Add(this.btn_UpdateCorpDataXML);
             this.tabSettings.Controls.Add(this.btn_UpdateSkillTree);
             this.tabSettings.Controls.Add(this.lbl_Corp_vCode);
             this.tabSettings.Controls.Add(this.lbl_CorpKeyID);
-            this.tabSettings.Controls.Add(this.cb_LockCorpUpdate);
+            this.tabSettings.Controls.Add(this.cb_LockAddCorporation);
             this.tabSettings.Controls.Add(this.tb_Corp_vCode);
             this.tabSettings.Controls.Add(this.tb_CorpKeyID);
             this.tabSettings.Controls.Add(this.btn_AddCorp);
@@ -127,8 +129,35 @@
             this.tabSettings.Padding = new System.Windows.Forms.Padding(3);
             this.tabSettings.Size = new System.Drawing.Size(802, 512);
             this.tabSettings.TabIndex = 1;
-            this.tabSettings.Text = "tabPage2";
+            this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // lbl_CorpNameRemove
+            // 
+            this.lbl_CorpNameRemove.AutoSize = true;
+            this.lbl_CorpNameRemove.Location = new System.Drawing.Point(454, 458);
+            this.lbl_CorpNameRemove.Name = "lbl_CorpNameRemove";
+            this.lbl_CorpNameRemove.Size = new System.Drawing.Size(150, 13);
+            this.lbl_CorpNameRemove.TabIndex = 12;
+            this.lbl_CorpNameRemove.Text = "Corporation Name to Remove:";
+            // 
+            // btnRemoveCorp
+            // 
+            this.btnRemoveCorp.Location = new System.Drawing.Point(653, 419);
+            this.btnRemoveCorp.Name = "btnRemoveCorp";
+            this.btnRemoveCorp.Size = new System.Drawing.Size(140, 30);
+            this.btnRemoveCorp.TabIndex = 11;
+            this.btnRemoveCorp.Text = "Remove Corporation";
+            this.btnRemoveCorp.UseVisualStyleBackColor = true;
+            this.btnRemoveCorp.Click += new System.EventHandler(this.btnRemoveCorp_Click);
+            // 
+            // cbRemoveCorp
+            // 
+            this.cbRemoveCorp.FormattingEnabled = true;
+            this.cbRemoveCorp.Location = new System.Drawing.Point(610, 455);
+            this.cbRemoveCorp.Name = "cbRemoveCorp";
+            this.cbRemoveCorp.Size = new System.Drawing.Size(183, 21);
+            this.cbRemoveCorp.TabIndex = 10;
             // 
             // btn_UpdateCorpDataXML
             // 
@@ -136,7 +165,7 @@
             this.btn_UpdateCorpDataXML.Name = "btn_UpdateCorpDataXML";
             this.btn_UpdateCorpDataXML.Size = new System.Drawing.Size(140, 30);
             this.btn_UpdateCorpDataXML.TabIndex = 9;
-            this.btn_UpdateCorpDataXML.Text = "Update CorpData XML";
+            this.btn_UpdateCorpDataXML.Text = "Update Corporation API";
             this.btn_UpdateCorpDataXML.UseVisualStyleBackColor = true;
             this.btn_UpdateCorpDataXML.Click += new System.EventHandler(this.btn_UpdateCorpDataXML_Click);
             // 
@@ -168,16 +197,16 @@
             this.lbl_CorpKeyID.TabIndex = 6;
             this.lbl_CorpKeyID.Text = "Corp KeyID:";
             // 
-            // cb_LockCorpUpdate
+            // cb_LockAddCorporation
             // 
-            this.cb_LockCorpUpdate.AutoSize = true;
-            this.cb_LockCorpUpdate.Location = new System.Drawing.Point(221, 194);
-            this.cb_LockCorpUpdate.Name = "cb_LockCorpUpdate";
-            this.cb_LockCorpUpdate.Size = new System.Drawing.Size(62, 17);
-            this.cb_LockCorpUpdate.TabIndex = 5;
-            this.cb_LockCorpUpdate.Text = "Locked";
-            this.cb_LockCorpUpdate.UseVisualStyleBackColor = true;
-            this.cb_LockCorpUpdate.CheckedChanged += new System.EventHandler(this.cb_LockCorpUpdate_CheckedChanged);
+            this.cb_LockAddCorporation.AutoSize = true;
+            this.cb_LockAddCorporation.Location = new System.Drawing.Point(221, 194);
+            this.cb_LockAddCorporation.Name = "cb_LockAddCorporation";
+            this.cb_LockAddCorporation.Size = new System.Drawing.Size(62, 17);
+            this.cb_LockAddCorporation.TabIndex = 5;
+            this.cb_LockAddCorporation.Text = "Locked";
+            this.cb_LockAddCorporation.UseVisualStyleBackColor = true;
+            this.cb_LockAddCorporation.CheckedChanged += new System.EventHandler(this.cb_LockCorpUpdate_CheckedChanged);
             // 
             // tb_Corp_vCode
             // 
@@ -194,24 +223,6 @@
             this.tb_CorpKeyID.Name = "tb_CorpKeyID";
             this.tb_CorpKeyID.Size = new System.Drawing.Size(200, 20);
             this.tb_CorpKeyID.TabIndex = 3;
-            // 
-            // cbRemoveCorp
-            // 
-            this.cbRemoveCorp.FormattingEnabled = true;
-            this.cbRemoveCorp.Location = new System.Drawing.Point(477, 367);
-            this.cbRemoveCorp.Name = "cbRemoveCorp";
-            this.cbRemoveCorp.Size = new System.Drawing.Size(183, 21);
-            this.cbRemoveCorp.TabIndex = 10;
-            // 
-            // btnRemoveCorp
-            // 
-            this.btnRemoveCorp.Location = new System.Drawing.Point(477, 331);
-            this.btnRemoveCorp.Name = "btnRemoveCorp";
-            this.btnRemoveCorp.Size = new System.Drawing.Size(140, 30);
-            this.btnRemoveCorp.TabIndex = 11;
-            this.btnRemoveCorp.Text = "Remove Corporation";
-            this.btnRemoveCorp.UseVisualStyleBackColor = true;
-            this.btnRemoveCorp.Click += new System.EventHandler(this.btnRemoveCorp_Click);
             // 
             // frmMain
             // 
@@ -240,7 +251,7 @@
         private System.Windows.Forms.TabPage tabSettings;
         private System.Windows.Forms.TextBox tb_Corp_vCode;
         private System.Windows.Forms.TextBox tb_CorpKeyID;
-        private System.Windows.Forms.CheckBox cb_LockCorpUpdate;
+        private System.Windows.Forms.CheckBox cb_LockAddCorporation;
         private System.Windows.Forms.Label lbl_Corp_vCode;
         private System.Windows.Forms.Label lbl_CorpKeyID;
         private System.Windows.Forms.Button btn_UpdateSkillTree;
@@ -248,6 +259,7 @@
         private System.Windows.Forms.Button btn_RefreshList;
         private System.Windows.Forms.ComboBox cbRemoveCorp;
         private System.Windows.Forms.Button btnRemoveCorp;
+        private System.Windows.Forms.Label lbl_CorpNameRemove;
     }
 }
 

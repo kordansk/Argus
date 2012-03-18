@@ -33,7 +33,7 @@ namespace Argus
         }
         private void frmMain_Load(object sender, EventArgs e)
         {
-            cb_LockCorpUpdate.Checked = true;
+            cb_LockAddCorporation.Checked = true;
             btn_AddCorp.Enabled = false;
             tb_CorpKeyID.Enabled = false;
             tb_Corp_vCode.Enabled = false;
@@ -41,17 +41,23 @@ namespace Argus
         }
         private void LoadFormData()
         {
-            EveCharactersList.RemoveRange(0, EveCharactersList.Count);
-            CorporationDataList.RemoveRange(0, CorporationDataList.Count);
-            EveSkillList.RemoveRange(0, EveSkillList.Count);
-            CSVList.RemoveRange(0, CSVList.Count);
-            cbRemoveCorp.Items.Clear();
-            CorpDropDownList.RemoveRange(0, CorpDropDownList.Count);
-
+            List<CharacterSheet> emptyEveCharactersList = new List<CharacterSheet>();
+            List<CorpData> emptyCorporationDataList = new List<CorpData>();
+            List<SkillSheet> emptyEveSkillList = new List<SkillSheet>();
+            List<ImportedData> emptyCSVList = new List<ImportedData>();
+            List<ListItem> emptyCorpDropDownList = new List<ListItem>();
+            List<UserData> emptyUserInfoList = new List<UserData>();
+            EveCharactersList = emptyEveCharactersList;
+            CorporationDataList = emptyCorporationDataList;
+            EveSkillList = emptyEveSkillList;
+            CSVList = emptyCSVList;
+            CorpDropDownList = emptyCorpDropDownList;
+            UserInfoList = emptyUserInfoList;
+            cbRemoveCorp.Items.Clear();            
             if (File.Exists(UserDataLocalXML))
             {
                 XElement xUserData;
-                xUserData = XElement.Load("userdata.xml");
+                xUserData = XElement.Load(UserDataLocalXML);
                 foreach (XElement usersettings in xUserData.Elements("settings"))
                 {
                     foreach (XElement xe in usersettings.Elements("user"))
@@ -62,22 +68,29 @@ namespace Argus
                             xe.Attribute("corpdataxml").Value));
                     }
                 }
-                foreach (UserData user in UserInfoList)
+                if (UserInfoList.Count > 0)
                 {
-                    LoadCorpData(user.corp_corpdata_xml);
-                }
-                int i = 0;
-                foreach (CorpData corp in CorporationDataList)
-                {
-                    CorpDropDownList.Add(new ListItem(corp.corporationName.ToString(), UserInfoList[i].corp_KeyID.ToString()));
-                    listMainView.Items.Add(corp.corporationName.ToString() + "\t" + UserInfoList[i].corp_KeyID.ToString());
-                    i++;
+                    foreach (UserData user in UserInfoList)
+                    {
+                        LoadCorpData(user.corp_corpdata_xml);
+                    } 
+                    int i = 0;
+                    foreach (CorpData corp in CorporationDataList)
+                    {
+                        CorpDropDownList.Add(new ListItem(corp.corporationName.ToString(), UserInfoList[i].corp_KeyID.ToString()));
+                        listMainView.Items.Add(corp.corporationName.ToString() + "\t" + UserInfoList[i].corp_KeyID.ToString());
+                        i++;
+                    }
                 }
                 foreach (ListItem item in CorpDropDownList)
                 {
                     cbRemoveCorp.Items.Add(item);
+                    cbRemoveCorp.SelectedIndex = 0;
                 }
-                cbRemoveCorp.SelectedIndex = 0; 
+                if (cbRemoveCorp.Items.Count == 0)
+                {
+                    cbRemoveCorp.Text = "";
+                }
             }
             else
             {
@@ -461,7 +474,7 @@ namespace Argus
             else
             {
                 XDocument UpdateUserData = XDocument.Load(UserDataLocalXML);
-                UpdateUserData.Root.Element("UserData").Element("settings").Add(new XElement("user",
+                UpdateUserData.Root.Element("settings").Add(new XElement("user",
                     new XAttribute("corp_keyID", tb_CorpKeyID.Text),
                     new XAttribute("corp_vCode", tb_Corp_vCode.Text),
                     new XAttribute("corpdataxml", corpdataFileName)));
@@ -469,15 +482,40 @@ namespace Argus
             }
             tb_Corp_vCode.Clear();
             tb_CorpKeyID.Clear();
-            cb_LockCorpUpdate.Checked = true;
+            cb_LockAddCorporation.Checked = true;
             btn_AddCorp.Enabled = false;
             tb_CorpKeyID.Enabled = false;
             tb_Corp_vCode.Enabled = false;
-            LoadFormData();
+            XElement xUserData;
+            xUserData = XElement.Load(UserDataLocalXML);
+            foreach (XElement usersettings in xUserData.Elements("settings"))
+            {
+                foreach (XElement xe in usersettings.Elements("user"))
+                {
+                    UserInfoList.Add(new UserData(
+                        xe.Attribute("corp_keyID").Value,
+                        xe.Attribute("corp_vCode").Value,
+                        xe.Attribute("corpdataxml").Value));
+                }
+            }
+        }
+        private void RemoveCorp()
+        {
+            if (CorpDropDownList.Count > 0)
+            {
+                ListItem corpKeyID = (ListItem)cbRemoveCorp.SelectedItem;
+                listMainView.Items.Add(corpKeyID.value);
+                XDocument RemoveCorp = XDocument.Load(UserDataLocalXML);
+                RemoveCorp.Descendants("settings").Elements("user").Where(p => p.Attribute("corp_keyID") != null && (string)p.Attribute("corp_keyID") == corpKeyID.value.ToString()).Remove();
+                RemoveCorp.Save(UserDataLocalXML);
+                File.Delete("corpdata_" + corpKeyID.value + ".xml");
+                cbRemoveCorp.Items.RemoveAt(cbRemoveCorp.SelectedIndex);
+                LoadFormData();
+            }
         }
         private void cb_LockCorpUpdate_CheckedChanged(object sender, EventArgs e)
         {
-            if (cb_LockCorpUpdate.Checked == false)
+            if (cb_LockAddCorporation.Checked == false)
             {
                 btn_AddCorp.Enabled = true;
                 tb_CorpKeyID.Enabled = true;
@@ -492,7 +530,16 @@ namespace Argus
         }
         private void btn_AddCorp_Click(object sender, EventArgs e) //saves corp data in the boxes into an xml
         {
-            AddCorp();   
+            if (tb_CorpKeyID.Text != "" & tb_Corp_vCode.Text != "")
+            {
+                AddCorp();
+                UpdateLocalCorpXML();
+                LoadFormData();
+            }
+            else
+            {
+                MessageBox.Show("Please enter a Key ID and a vCode.");
+            }
         }
         private void btn_UpdateCorpDataXML_Click(object sender, EventArgs e)
         {
@@ -531,15 +578,10 @@ namespace Argus
         {
             LoadFormData();
         }
-
         private void btnRemoveCorp_Click(object sender, EventArgs e)
         {
-            ListItem corpKeyID = (ListItem)cbRemoveCorp.SelectedItem;
-            listMainView.Items.Add(corpKeyID.value);
-            XDocument RemoveCorp = XDocument.Load(UserDataLocalXML);
-            RemoveCorp.Descendants("settings").Elements("user").Where(p => p.Attribute("corp_keyID") != null && (string)p.Attribute("corp_keyID") == corpKeyID.value.ToString()).Remove();
-            LoadFormData();
+            RemoveCorp();
+        }
 
-        } 
     }
 }
