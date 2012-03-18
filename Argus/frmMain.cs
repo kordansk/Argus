@@ -14,17 +14,18 @@ namespace Argus
     public partial class frmMain : Form
     {
         public List<ImportedData> CSVList = new List<ImportedData>();
-        public List<CorpData> CorporationDataXML = new List<CorpData>();
-        public List<SkillSheet> EveSkillsXML = new List<SkillSheet>();
-        public SkillSheet LoadEveSkills = new SkillSheet();
+        public List<CorpData> CorporationDataList = new List<CorpData>();
+        public List<SkillSheet> EveSkillList = new List<SkillSheet>();
+        public SkillSheet EveSkillObject = new SkillSheet();
         public List<CharacterSheet> EveCharactersList = new List<CharacterSheet>();
         public List<UserData> UserInfoList = new List<UserData>();
+        public List<ListItem> CorpDropDownList = new List<ListItem>();
         public string CorpFileXML;    
         public string CharacterDataXML = "datasheet.xml";  
         public string EveSkillsLocalXML = "skilldata.xml";
         public string UserDataLocalXML = "userdata.xml";
-        public string EVE_API_remote_xml = "https://api.eveonline.com";
-        public string importFile_name;
+        public string EVE_API_RemoteXML = "https://api.eveonline.com";
+        public string ImportFileNameXML;
         
         public frmMain()
         {
@@ -40,6 +41,13 @@ namespace Argus
         }
         private void LoadFormData()
         {
+            EveCharactersList.RemoveRange(0, EveCharactersList.Count);
+            CorporationDataList.RemoveRange(0, CorporationDataList.Count);
+            EveSkillList.RemoveRange(0, EveSkillList.Count);
+            CSVList.RemoveRange(0, CSVList.Count);
+            cbRemoveCorp.Items.Clear();
+            CorpDropDownList.RemoveRange(0, CorpDropDownList.Count);
+
             if (File.Exists(UserDataLocalXML))
             {
                 XElement xUserData;
@@ -57,7 +65,19 @@ namespace Argus
                 foreach (UserData user in UserInfoList)
                 {
                     LoadCorpData(user.corp_corpdata_xml);
-                }                
+                }
+                int i = 0;
+                foreach (CorpData corp in CorporationDataList)
+                {
+                    CorpDropDownList.Add(new ListItem(corp.corporationName.ToString(), UserInfoList[i].corp_KeyID.ToString()));
+                    listMainView.Items.Add(corp.corporationName.ToString() + "\t" + UserInfoList[i].corp_KeyID.ToString());
+                    i++;
+                }
+                foreach (ListItem item in CorpDropDownList)
+                {
+                    cbRemoveCorp.Items.Add(item);
+                }
+                cbRemoveCorp.SelectedIndex = 0; 
             }
             else
             {
@@ -65,20 +85,24 @@ namespace Argus
             }
             if (File.Exists(EveSkillsLocalXML))
             {
-                EveSkillsXML = LoadEveSkills.GetSkills(EveSkillsLocalXML);                
+                EveSkillList = EveSkillObject.GetSkills(EveSkillsLocalXML);                
             }
             else
             {
                 MessageBox.Show("Updating Skill List.");
                 UpdateLocalEveSkillsXML();
             }
-            if (!File.Exists(CharacterDataXML))
+            if (File.Exists(CharacterDataXML))
+            {
+                LoadLocalDataSheet();                
+            }
+            else
             {
                 XDocument CreateDatasheetXML = new XDocument();
                 XElement DatasheetRoot = new XElement("characters");
                 CreateDatasheetXML.Add(DatasheetRoot);
-                CreateDatasheetXML.Save(CharacterDataXML);
-            }
+                CreateDatasheetXML.Save(CharacterDataXML); 
+            }            
         }
         private void LoadCorpData(string file)
         {
@@ -109,7 +133,7 @@ namespace Argus
                 }
             }
             corp_object.memberList = temp_list;
-            CorporationDataXML.Add(corp_object);
+            CorporationDataList.Add(corp_object);
         }
         private void LoadLocalDataSheet() //loads local datasheet into memory (this is the file with the actual information to manipulate
         {
@@ -152,7 +176,7 @@ namespace Argus
         {
             Application.DoEvents();
             XElement xRemoteSkillTree;
-            string remote_skills_api = EVE_API_remote_xml + "/eve/SkillTree.xml.aspx";
+            string remote_skills_api = EVE_API_RemoteXML + "/eve/SkillTree.xml.aspx";
             xRemoteSkillTree = XElement.Load(remote_skills_api);
             foreach (XElement result in xRemoteSkillTree.Elements("result"))
             {
@@ -164,7 +188,7 @@ namespace Argus
                         {
                             foreach (XElement row in rowset_lower.Elements("row"))
                             {
-                                EveSkillsXML.Add(new SkillSheet(
+                                EveSkillList.Add(new SkillSheet(
                                     rowgroup.Attribute("groupName").Value,
                                     int.Parse(row.Attribute("groupID").Value),
                                     row.Attribute("typeName").Value,
@@ -183,7 +207,7 @@ namespace Argus
             xroot.Add(new XElement("skills"));
             WriteLocalSkills.Add(xroot);
             WriteLocalSkills.Save(EveSkillsLocalXML);
-            foreach (SkillSheet skill in EveSkillsXML)
+            foreach (SkillSheet skill in EveSkillList)
             {
                 WriteLocalSkills.Root.Element("skills").Add(
                     new XElement("skill",
@@ -202,8 +226,8 @@ namespace Argus
                 {
                     File.Delete(users.corp_corpdata_xml);
                 }
-                string remote_corp_API = EVE_API_remote_xml + "/corp/CorporationSheet.xml.aspx?keyID=" + users.corp_KeyID + "&vCode=" + users.corp_vCode;
-                string remote_corp_members = EVE_API_remote_xml + "/corp/MemberTracking.xml.aspx?keyID=" + users.corp_KeyID + "&vCode=" + users.corp_vCode + "&extended=1";
+                string remote_corp_API = EVE_API_RemoteXML + "/corp/CorporationSheet.xml.aspx?keyID=" + users.corp_KeyID + "&vCode=" + users.corp_vCode;
+                string remote_corp_members = EVE_API_RemoteXML + "/corp/MemberTracking.xml.aspx?keyID=" + users.corp_KeyID + "&vCode=" + users.corp_vCode + "&extended=1";
                 XElement xRemoteCorpAPI;
                 XElement xRemoteCorpMembers;
                 CorpData temp_corp_vals = new CorpData();
@@ -274,7 +298,7 @@ namespace Argus
             List<CharacterSheet> list_updatechars = new List<CharacterSheet>();
             foreach (ImportedData line in CSVList)
             {
-                string remote_corp_API = EVE_API_remote_xml + "/account/Characters.xml.aspx?keyID=" + line.KeyID + "&vCode=" + line.vCode;
+                string remote_corp_API = EVE_API_RemoteXML + "/account/Characters.xml.aspx?keyID=" + line.KeyID + "&vCode=" + line.vCode;
                 XElement xRemoteCharacters;
                 xRemoteCharacters = XElement.Load(remote_corp_API);
                 foreach (XElement result in xRemoteCharacters.Elements("result"))
@@ -298,7 +322,7 @@ namespace Argus
             {
                 List<CharacterSheet.CharacterSkills> temp_skills = new List<CharacterSheet.CharacterSkills>();
                 List<CharacterSheet.CharacterTitles> temp_titles = new List<CharacterSheet.CharacterTitles>();                
-                string remote_character_sheet_API = EVE_API_remote_xml + "/char/CharacterSheet.xml.aspx?keyID=" + chars.keyID + "&vCode=" + chars.vCode + "&characterID=" + chars.characterID;
+                string remote_character_sheet_API = EVE_API_RemoteXML + "/char/CharacterSheet.xml.aspx?keyID=" + chars.keyID + "&vCode=" + chars.vCode + "&characterID=" + chars.characterID;
                 XElement xRemoteCharacterSheet;
                 xRemoteCharacterSheet = XElement.Load(remote_character_sheet_API);
                 XDocument xdocCharSheet = XDocument.Load(remote_character_sheet_API);
@@ -319,7 +343,7 @@ namespace Argus
                     select el;
                 foreach (XElement skills in select_skills.Elements("row"))
                 {
-                    SkillSheet skill_name = EveSkillsXML.Find(delegate(SkillSheet s) { return s.typeID == int.Parse(skills.Attribute("typeID").Value); });
+                    SkillSheet skill_name = EveSkillList.Find(delegate(SkillSheet s) { return s.typeID == int.Parse(skills.Attribute("typeID").Value); });
                     temp_skills.Add(new CharacterSheet.CharacterSkills(
                         int.Parse(skills.Attribute("typeID").Value),
                         int.Parse(skills.Attribute("skillpoints").Value),
@@ -341,9 +365,31 @@ namespace Argus
             {
                 listMainView.Items.Add(character.name);
             }
-            //Adding or Updating the datasheet.xml file here
-            
+
+            //Adding to dataset here.   
+            // if updatedatasheet doesnt contain a reference to a characterid in the list_updatechars, 
+            // add it to the sheet; else delete that node and add new data to update list_updatechars and EveCharactersList
             XDocument UpdateDataSheet = XDocument.Load(CharacterDataXML);
+            
+            
+            List<long> characterID_duplicates = new List<long>();
+            foreach (CharacterSheet import in list_updatechars)
+            {
+                foreach (CharacterSheet exists in EveCharactersList)
+                {
+                    if (import.characterID == exists.characterID)
+                    {
+                        characterID_duplicates.Add(exists.characterID);
+                    }
+                        
+                }
+            }
+            foreach (long id in characterID_duplicates)
+            {
+                UpdateDataSheet.Descendants("pilot").Where(p => p.Attribute("characterID") != null && (string)p.Attribute("characterID") == id.ToString()).Remove();
+            }
+            characterID_duplicates.Clear();
+            UpdateDataSheet.Save(CharacterDataXML);
             foreach (CharacterSheet pilot in list_updatechars)
             {
                 UpdateDataSheet.Element("characters").Add(
@@ -372,47 +418,21 @@ namespace Argus
                     foreach (CharacterSheet.CharacterTitles title in pilot.titles)
                     {
                         el.Element("titles").Add(
-                            new XElement("skill",
+                            new XElement("title",
                                 new XAttribute("titleID", title.titleID),
                                 new XAttribute("titleName", title.titleName)));
                     }
                 }
             }
             UpdateDataSheet.Save(CharacterDataXML);
-            
-            /*
-            foreach (CharacterSheet pilot in list_updatechars)
-            {
-                foreach (CharacterSheet.CharacterSkills skill in pilot.skills)
-                {
-                    UpdateDataSheet.Element("characters").Element("pilot").Element("skills").Add(
-                        new XElement("skill",
-                            new XAttribute("typeID", skill.typeID),
-                            new XAttribute("skillpoints", skill.skillpoints),
-                            new XAttribute("level", skill.level),
-                            new XAttribute("name", skill.name)));
-                }
-                foreach (CharacterSheet.CharacterTitles title in pilot.titles)
-                {
-                    UpdateDataSheet.Element("characters").Element("pilot").Element("titles").Add(
-                        new XElement("skill",
-                            new XAttribute("titleID", title.titleID),
-                            new XAttribute("titleName", title.titleName)));
-                }
-            }
-            UpdateDataSheet.Save(CharacterDataXML);
-            */
-            
-            
-
-
+            LoadFormData();
         }
-        private void AddData()
+        private void AddDataFromCSV()
         {
             char[] seps = { ',' };
-            if (importFile_name != null)
+            if (ImportFileNameXML != null)
             {
-                string[] csvDataFile = File.ReadAllLines(importFile_name);
+                string[] csvDataFile = File.ReadAllLines(ImportFileNameXML);
                 foreach (string line in csvDataFile)
                 {
                     string[] split_values = line.Split(seps, StringSplitOptions.RemoveEmptyEntries);
@@ -421,22 +441,7 @@ namespace Argus
             }
             AddToDatasetXML();
         } //grabs all new user data files and loads them into memory from CSV file
-        private void cb_LockCorpUpdate_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cb_LockCorpUpdate.Checked == false)
-            {
-                btn_AddCorp.Enabled = true;
-                tb_CorpKeyID.Enabled = true;
-                tb_Corp_vCode.Enabled = true;
-            }
-            else
-            {
-                btn_AddCorp.Enabled = false;
-                tb_CorpKeyID.Enabled = false;
-                tb_Corp_vCode.Enabled = false;
-            }
-        }
-        private void btn_AddCorp_Click(object sender, EventArgs e) //saves corp data in the boxes into an xml
+        private void AddCorp()
         {
             string corpdataFileName = "corpdata_" + tb_CorpKeyID.Text + ".xml";
             if (!File.Exists(UserDataLocalXML))
@@ -470,6 +475,25 @@ namespace Argus
             tb_Corp_vCode.Enabled = false;
             LoadFormData();
         }
+        private void cb_LockCorpUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cb_LockCorpUpdate.Checked == false)
+            {
+                btn_AddCorp.Enabled = true;
+                tb_CorpKeyID.Enabled = true;
+                tb_Corp_vCode.Enabled = true;
+            }
+            else
+            {
+                btn_AddCorp.Enabled = false;
+                tb_CorpKeyID.Enabled = false;
+                tb_Corp_vCode.Enabled = false;
+            }
+        }
+        private void btn_AddCorp_Click(object sender, EventArgs e) //saves corp data in the boxes into an xml
+        {
+            AddCorp();   
+        }
         private void btn_UpdateCorpDataXML_Click(object sender, EventArgs e)
         {
             UpdateLocalCorpXML();
@@ -480,13 +504,13 @@ namespace Argus
         }
         private void btn_ImportData_Click(object sender, EventArgs e) //gets the csv file path to import into memory
         {
-            importFile_name = getFileName();
-            AddData();
+            ImportFileNameXML = getFileName();
+            AddDataFromCSV();
         }
         private void btn_RefreshList_Click(object sender, EventArgs e)
         {
             RefreshData();
-        } //grab filename method
+        }
         public string getFileName()
         {
             OpenFileDialog fileBrowserDialog = new OpenFileDialog();
@@ -505,7 +529,17 @@ namespace Argus
         }
         private void RefreshData()
         {
+            LoadFormData();
+        }
 
-        } //refreshes listbox
+        private void btnRemoveCorp_Click(object sender, EventArgs e)
+        {
+            ListItem corpKeyID = (ListItem)cbRemoveCorp.SelectedItem;
+            listMainView.Items.Add(corpKeyID.value);
+            XDocument RemoveCorp = XDocument.Load(UserDataLocalXML);
+            RemoveCorp.Descendants("settings").Elements("user").Where(p => p.Attribute("corp_keyID") != null && (string)p.Attribute("corp_keyID") == corpKeyID.value.ToString()).Remove();
+            LoadFormData();
+
+        } 
     }
 }

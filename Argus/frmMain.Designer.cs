@@ -42,6 +42,8 @@
             this.cb_LockCorpUpdate = new System.Windows.Forms.CheckBox();
             this.tb_Corp_vCode = new System.Windows.Forms.TextBox();
             this.tb_CorpKeyID = new System.Windows.Forms.TextBox();
+            this.cbRemoveCorp = new System.Windows.Forms.ComboBox();
+            this.btnRemoveCorp = new System.Windows.Forms.Button();
             this.tabcontrol_Main.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSettings.SuspendLayout();
@@ -67,7 +69,7 @@
             // 
             // btn_AddCorp
             // 
-            this.btn_AddCorp.Location = new System.Drawing.Point(254, 255);
+            this.btn_AddCorp.Location = new System.Drawing.Point(83, 186);
             this.btn_AddCorp.Name = "btn_AddCorp";
             this.btn_AddCorp.Size = new System.Drawing.Size(120, 30);
             this.btn_AddCorp.TabIndex = 2;
@@ -109,6 +111,8 @@
             // 
             // tabSettings
             // 
+            this.tabSettings.Controls.Add(this.btnRemoveCorp);
+            this.tabSettings.Controls.Add(this.cbRemoveCorp);
             this.tabSettings.Controls.Add(this.btn_UpdateCorpDataXML);
             this.tabSettings.Controls.Add(this.btn_UpdateSkillTree);
             this.tabSettings.Controls.Add(this.lbl_Corp_vCode);
@@ -149,7 +153,7 @@
             // lbl_Corp_vCode
             // 
             this.lbl_Corp_vCode.AutoSize = true;
-            this.lbl_Corp_vCode.Location = new System.Drawing.Point(182, 319);
+            this.lbl_Corp_vCode.Location = new System.Drawing.Point(11, 250);
             this.lbl_Corp_vCode.Name = "lbl_Corp_vCode";
             this.lbl_Corp_vCode.Size = new System.Drawing.Size(66, 13);
             this.lbl_Corp_vCode.TabIndex = 7;
@@ -158,7 +162,7 @@
             // lbl_CorpKeyID
             // 
             this.lbl_CorpKeyID.AutoSize = true;
-            this.lbl_CorpKeyID.Location = new System.Drawing.Point(184, 293);
+            this.lbl_CorpKeyID.Location = new System.Drawing.Point(13, 224);
             this.lbl_CorpKeyID.Name = "lbl_CorpKeyID";
             this.lbl_CorpKeyID.Size = new System.Drawing.Size(64, 13);
             this.lbl_CorpKeyID.TabIndex = 6;
@@ -167,7 +171,7 @@
             // cb_LockCorpUpdate
             // 
             this.cb_LockCorpUpdate.AutoSize = true;
-            this.cb_LockCorpUpdate.Location = new System.Drawing.Point(392, 263);
+            this.cb_LockCorpUpdate.Location = new System.Drawing.Point(221, 194);
             this.cb_LockCorpUpdate.Name = "cb_LockCorpUpdate";
             this.cb_LockCorpUpdate.Size = new System.Drawing.Size(62, 17);
             this.cb_LockCorpUpdate.TabIndex = 5;
@@ -178,7 +182,7 @@
             // tb_Corp_vCode
             // 
             this.tb_Corp_vCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_Corp_vCode.Location = new System.Drawing.Point(254, 317);
+            this.tb_Corp_vCode.Location = new System.Drawing.Point(83, 248);
             this.tb_Corp_vCode.Name = "tb_Corp_vCode";
             this.tb_Corp_vCode.Size = new System.Drawing.Size(500, 20);
             this.tb_Corp_vCode.TabIndex = 4;
@@ -186,10 +190,28 @@
             // tb_CorpKeyID
             // 
             this.tb_CorpKeyID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_CorpKeyID.Location = new System.Drawing.Point(254, 291);
+            this.tb_CorpKeyID.Location = new System.Drawing.Point(83, 222);
             this.tb_CorpKeyID.Name = "tb_CorpKeyID";
             this.tb_CorpKeyID.Size = new System.Drawing.Size(200, 20);
             this.tb_CorpKeyID.TabIndex = 3;
+            // 
+            // cbRemoveCorp
+            // 
+            this.cbRemoveCorp.FormattingEnabled = true;
+            this.cbRemoveCorp.Location = new System.Drawing.Point(477, 367);
+            this.cbRemoveCorp.Name = "cbRemoveCorp";
+            this.cbRemoveCorp.Size = new System.Drawing.Size(183, 21);
+            this.cbRemoveCorp.TabIndex = 10;
+            // 
+            // btnRemoveCorp
+            // 
+            this.btnRemoveCorp.Location = new System.Drawing.Point(477, 331);
+            this.btnRemoveCorp.Name = "btnRemoveCorp";
+            this.btnRemoveCorp.Size = new System.Drawing.Size(140, 30);
+            this.btnRemoveCorp.TabIndex = 11;
+            this.btnRemoveCorp.Text = "Remove Corporation";
+            this.btnRemoveCorp.UseVisualStyleBackColor = true;
+            this.btnRemoveCorp.Click += new System.EventHandler(this.btnRemoveCorp_Click);
             // 
             // frmMain
             // 
@@ -224,6 +246,8 @@
         private System.Windows.Forms.Button btn_UpdateSkillTree;
         private System.Windows.Forms.Button btn_UpdateCorpDataXML;
         private System.Windows.Forms.Button btn_RefreshList;
+        private System.Windows.Forms.ComboBox cbRemoveCorp;
+        private System.Windows.Forms.Button btnRemoveCorp;
     }
 }
 
