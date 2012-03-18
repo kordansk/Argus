@@ -45,9 +45,11 @@
             this.cb_LockAddCorporation = new System.Windows.Forms.CheckBox();
             this.tb_Corp_vCode = new System.Windows.Forms.TextBox();
             this.tb_CorpKeyID = new System.Windows.Forms.TextBox();
+            this._dgMainView = new System.Windows.Forms.DataGridView();
             this.tabcontrol_Main.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._dgMainView)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_ImportData
@@ -63,9 +65,9 @@
             // listMainView
             // 
             this.listMainView.FormattingEnabled = true;
-            this.listMainView.Location = new System.Drawing.Point(6, 112);
+            this.listMainView.Location = new System.Drawing.Point(477, 359);
             this.listMainView.Name = "listMainView";
-            this.listMainView.Size = new System.Drawing.Size(787, 394);
+            this.listMainView.Size = new System.Drawing.Size(308, 147);
             this.listMainView.TabIndex = 1;
             // 
             // btn_AddCorp
@@ -90,6 +92,7 @@
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this._dgMainView);
             this.tabMain.Controls.Add(this.btn_RefreshList);
             this.tabMain.Controls.Add(this.listMainView);
             this.tabMain.Location = new System.Drawing.Point(4, 22);
@@ -224,6 +227,14 @@
             this.tb_CorpKeyID.Size = new System.Drawing.Size(200, 20);
             this.tb_CorpKeyID.TabIndex = 3;
             // 
+            // _dgMainView
+            // 
+            this._dgMainView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this._dgMainView.Location = new System.Drawing.Point(6, 6);
+            this._dgMainView.Name = "_dgMainView";
+            this._dgMainView.Size = new System.Drawing.Size(270, 133);
+            this._dgMainView.TabIndex = 3;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -237,6 +248,7 @@
             this.tabMain.ResumeLayout(false);
             this.tabSettings.ResumeLayout(false);
             this.tabSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._dgMainView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -260,6 +272,7 @@
         private System.Windows.Forms.ComboBox cbRemoveCorp;
         private System.Windows.Forms.Button btnRemoveCorp;
         private System.Windows.Forms.Label lbl_CorpNameRemove;
+        private System.Windows.Forms.DataGridView _dgMainView;
     }
 }
 

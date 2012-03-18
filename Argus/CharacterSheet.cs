@@ -15,6 +15,7 @@ namespace Argus
         public List<CharacterTitles> titles { get; set; }
         public string keyID { get; set; }
         public string vCode { get; set; }
+        public string forumName { get; set; }
 
         public CharacterSheet()
         { }
@@ -28,8 +29,16 @@ namespace Argus
             this.skills = _skills;
             this.titles = _titles;
         }
-        
-
+        public CharacterSheet(long _charid, string _name, long _corpid, string _corpname, string _fname, List<CharacterSkills> _skills, List<CharacterTitles> _titles)
+        {
+            this.characterID = _charid;
+            this.name = _name;
+            this.corporationID = _corpid;
+            this.corporationName = _corpname;
+            this.forumName = _fname;
+            this.skills = _skills;
+            this.titles = _titles;
+        }
         public class CharacterImport
         {
             public long characterID { get; set; }
@@ -38,7 +47,8 @@ namespace Argus
             public string corporationName { get; set; }
             public string keyID { get; set; }
             public string vCode { get; set; }
-            public CharacterImport(string _name, long _charid, string _corpname, long _corpid, string _key, string _vCode)
+            public string forumName { get; set; }
+            public CharacterImport(string _name, long _charid, string _corpname, long _corpid, string _key, string _vCode, string _fname)
             {
                 this.characterID = _charid;
                 this.name = _name;
@@ -46,6 +56,7 @@ namespace Argus
                 this.corporationName = _corpname;
                 this.keyID = _key;
                 this.vCode = _vCode;
+                this.forumName = _fname;
             }
         }
         public class CharacterTitles

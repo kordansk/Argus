@@ -20,6 +20,7 @@ namespace Argus
         public List<CharacterSheet> EveCharactersList = new List<CharacterSheet>();
         public List<UserData> UserInfoList = new List<UserData>();
         public List<ListItem> CorpDropDownList = new List<ListItem>();
+        public BindingList<CharacterView> CharacterDataGrid = new BindingList<CharacterView>();
         public string CorpFileXML;    
         public string CharacterDataXML = "datasheet.xml";  
         public string EveSkillsLocalXML = "skilldata.xml";
@@ -47,12 +48,14 @@ namespace Argus
             List<ImportedData> emptyCSVList = new List<ImportedData>();
             List<ListItem> emptyCorpDropDownList = new List<ListItem>();
             List<UserData> emptyUserInfoList = new List<UserData>();
+            BindingList<CharacterView> emptyCharacterDataGrid = new BindingList<CharacterView>();
             EveCharactersList = emptyEveCharactersList;
             CorporationDataList = emptyCorporationDataList;
             EveSkillList = emptyEveSkillList;
             CSVList = emptyCSVList;
             CorpDropDownList = emptyCorpDropDownList;
             UserInfoList = emptyUserInfoList;
+            CharacterDataGrid = emptyCharacterDataGrid;
             cbRemoveCorp.Items.Clear();            
             if (File.Exists(UserDataLocalXML))
             {
@@ -78,7 +81,6 @@ namespace Argus
                     foreach (CorpData corp in CorporationDataList)
                     {
                         CorpDropDownList.Add(new ListItem(corp.corporationName.ToString(), UserInfoList[i].corp_KeyID.ToString()));
-                        listMainView.Items.Add(corp.corporationName.ToString() + "\t" + UserInfoList[i].corp_KeyID.ToString());
                         i++;
                     }
                 }
@@ -115,7 +117,34 @@ namespace Argus
                 XElement DatasheetRoot = new XElement("characters");
                 CreateDatasheetXML.Add(DatasheetRoot);
                 CreateDatasheetXML.Save(CharacterDataXML); 
-            }            
+            }
+            
+            _dgMainView.DataSource = CharacterDataGrid;
+            _dgMainView.AutoGenerateColumns = false;
+            DataGridViewTextBoxColumn ownerColumn = new DataGridViewTextBoxColumn();
+            ownerColumn.DataPropertyName = "forumName";
+            ownerColumn.HeaderText = "Forum Owner";
+            DataGridViewTextBoxColumn nameColumn = new DataGridViewTextBoxColumn();
+            nameColumn.DataPropertyName = "name";
+            nameColumn.HeaderText = "Character Name";
+            DataGridViewTextBoxColumn corpnameColumn = new DataGridViewTextBoxColumn();
+            corpnameColumn.DataPropertyName = "corporationName";
+            corpnameColumn.HeaderText = "Corporation Name";
+            DataGridViewTextBoxColumn startdateColumn = new DataGridViewTextBoxColumn();
+            startdateColumn.DataPropertyName = "startDateTime";
+            startdateColumn.HeaderText = "Start Date";
+            DataGridViewTextBoxColumn logoffdateColumn = new DataGridViewTextBoxColumn();
+            logoffdateColumn.DataPropertyName = "logoffDateTime";
+            logoffdateColumn.HeaderText = "Last Time Logged In";
+            foreach (CharacterSheet pilot in EveCharactersList)
+            {
+                CorpData this_pilots_corp = CorporationDataList.Find(delegate(CorpData s) { return s.corporationID == pilot.corporationID; });
+                CorpData.Member this_pilots_corp_name = this_pilots_corp.memberList.Find(delegate (CorpData.Member s) {return s.characterID == pilot.characterID; });
+                
+                
+            }
+
+            
         }
         private void LoadCorpData(string file)
         {
@@ -181,6 +210,7 @@ namespace Argus
                     pilot.Attribute("name").Value,
                     Convert.ToInt64(pilot.Attribute("corporationID").Value),
                     pilot.Attribute("corporationName").Value,
+                    pilot.Attribute("forumName").Value,
                     temp_skills,
                     temp_titles));   
             }
@@ -326,11 +356,13 @@ namespace Argus
                                 row.Attribute("corporationName").Value,
                                 Int64.Parse(row.Attribute("corporationID").Value),
                                 line.KeyID,
-                                line.vCode));
+                                line.vCode,
+                                line.ForumName));
                         }
                     }
                 }
             }
+            // Retrieving the XML data from EVE API
             foreach (CharacterSheet.CharacterImport chars in list_getcharids)
             {
                 List<CharacterSheet.CharacterSkills> temp_skills = new List<CharacterSheet.CharacterSkills>();
@@ -365,26 +397,22 @@ namespace Argus
                 }
                 foreach (XElement result in xRemoteCharacterSheet.Descendants("result"))
                 {
+                    CharacterSheet.CharacterImport this_character = list_getcharids.Find(delegate(CharacterSheet.CharacterImport s) { return s.characterID.ToString() == result.Element("characterID").Value.ToString(); });
                     list_updatechars.Add(new CharacterSheet(
                         Int64.Parse(result.Element("characterID").Value),
                         result.Element("name").Value,
                         Int64.Parse(result.Element("corporationID").Value),
                         result.Element("corporationName").Value,
+                        this_character.forumName,
                         temp_skills,
-                        temp_titles));
+                        temp_titles
+                        ));
                 }
             }
-            foreach (CharacterSheet character in list_updatechars)
-            {
-                listMainView.Items.Add(character.name);
-            }
-
             //Adding to dataset here.   
             // if updatedatasheet doesnt contain a reference to a characterid in the list_updatechars, 
             // add it to the sheet; else delete that node and add new data to update list_updatechars and EveCharactersList
             XDocument UpdateDataSheet = XDocument.Load(CharacterDataXML);
-            
-            
             List<long> characterID_duplicates = new List<long>();
             foreach (CharacterSheet import in list_updatechars)
             {
@@ -393,8 +421,7 @@ namespace Argus
                     if (import.characterID == exists.characterID)
                     {
                         characterID_duplicates.Add(exists.characterID);
-                    }
-                        
+                    } 
                 }
             }
             foreach (long id in characterID_duplicates)
@@ -404,13 +431,14 @@ namespace Argus
             characterID_duplicates.Clear();
             UpdateDataSheet.Save(CharacterDataXML);
             foreach (CharacterSheet pilot in list_updatechars)
-            {
+            {               
                 UpdateDataSheet.Element("characters").Add(
                     new XElement("pilot",
                         new XAttribute("characterID", pilot.characterID),
                         new XAttribute("name", pilot.name),
                         new XAttribute("corporationID", pilot.corporationID),
-                        new XAttribute("corporationName", pilot.corporationName)
+                        new XAttribute("corporationName", pilot.corporationName),
+                        new XAttribute("forumName", pilot.forumName)
                         ));
                 IEnumerable<XElement> children = from el in UpdateDataSheet.Root.Elements("pilot")
                                                  where (string)el.Attribute("characterID") == pilot.characterID.ToString()
@@ -504,7 +532,6 @@ namespace Argus
             if (CorpDropDownList.Count > 0)
             {
                 ListItem corpKeyID = (ListItem)cbRemoveCorp.SelectedItem;
-                listMainView.Items.Add(corpKeyID.value);
                 XDocument RemoveCorp = XDocument.Load(UserDataLocalXML);
                 RemoveCorp.Descendants("settings").Elements("user").Where(p => p.Attribute("corp_keyID") != null && (string)p.Attribute("corp_keyID") == corpKeyID.value.ToString()).Remove();
                 RemoveCorp.Save(UserDataLocalXML);
