@@ -20,7 +20,7 @@ namespace Argus
         public List<CharacterSheet> EveCharactersList = new List<CharacterSheet>();
         public List<UserData> UserInfoList = new List<UserData>();
         public List<ListItem> CorpDropDownList = new List<ListItem>();
-        public List<CharacterView> CharacterDataGrid = new List<CharacterView>();
+        public AdvancedList<CharacterView> CharacterDataGrid = new AdvancedList<CharacterView>();
         public string CorpFileXML;    
         public string CharacterDataXML = "datasheet.xml";  
         public string EveSkillsLocalXML = "skilldata.xml";
@@ -31,6 +31,34 @@ namespace Argus
         public frmMain()
         {
             InitializeComponent();
+
+            _dgMainView.AutoGenerateColumns = false;
+            _dgMainView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            DataGridViewTextBoxColumn ownerColumn = new DataGridViewTextBoxColumn();
+            ownerColumn.DataPropertyName = "forumName";
+            ownerColumn.HeaderText = "Forum Owner";
+            DataGridViewTextBoxColumn nameColumn = new DataGridViewTextBoxColumn();
+            nameColumn.DataPropertyName = "name";
+            nameColumn.HeaderText = "Character Name";
+            DataGridViewTextBoxColumn corpnameColumn = new DataGridViewTextBoxColumn();
+            corpnameColumn.DataPropertyName = "corporationName";
+            corpnameColumn.HeaderText = "Corporation Name";
+            DataGridViewTextBoxColumn startdateColumn = new DataGridViewTextBoxColumn();
+            startdateColumn.DataPropertyName = "startDateTime";
+            startdateColumn.HeaderText = "Start Date";
+            DataGridViewTextBoxColumn logoffdateColumn = new DataGridViewTextBoxColumn();
+            logoffdateColumn.DataPropertyName = "logoffDateTime";
+            logoffdateColumn.HeaderText = "Last Time Logged In";
+            DataGridViewTextBoxColumn titlesColumn = new DataGridViewTextBoxColumn();
+            titlesColumn.DataPropertyName = "titles";
+            titlesColumn.HeaderText = "Titles";
+            
+            _dgMainView.Columns.Add(ownerColumn);
+            _dgMainView.Columns.Add(nameColumn);
+            _dgMainView.Columns.Add(corpnameColumn);
+            _dgMainView.Columns.Add(startdateColumn);
+            _dgMainView.Columns.Add(logoffdateColumn);
+            _dgMainView.Columns.Add(titlesColumn);
         }
         private void frmMain_Load(object sender, EventArgs e)
         {
@@ -48,7 +76,7 @@ namespace Argus
             List<ImportedData> emptyCSVList = new List<ImportedData>();
             List<ListItem> emptyCorpDropDownList = new List<ListItem>();
             List<UserData> emptyUserInfoList = new List<UserData>();
-            List<CharacterView> emptyCharacterDataGrid = new List<CharacterView>();
+            AdvancedList<CharacterView> emptyCharacterDataGrid = new AdvancedList<CharacterView>();
             EveCharactersList = emptyEveCharactersList;
             CorporationDataList = emptyCorporationDataList;
             EveSkillList = emptyEveSkillList;
@@ -56,7 +84,17 @@ namespace Argus
             CorpDropDownList = emptyCorpDropDownList;
             UserInfoList = emptyUserInfoList;
             CharacterDataGrid = emptyCharacterDataGrid;
-            cbRemoveCorp.Items.Clear();            
+            cbRemoveCorp.Items.Clear();
+            listCharacters.Items.Clear();
+            if (File.Exists(EveSkillsLocalXML))
+            {
+                EveSkillList = EveSkillObject.GetSkills(EveSkillsLocalXML);
+            }
+            else
+            {
+                listMainView.Items.Add("Updating Skill List.");
+                UpdateLocalEveSkillsXML();
+            }
             if (File.Exists(UserDataLocalXML))
             {
                 XElement xUserData;
@@ -96,25 +134,11 @@ namespace Argus
             }
             else
             {
-                MessageBox.Show("No userdata loaded, please add your corp API information.");
-            }
-            if (File.Exists(EveSkillsLocalXML))
-            {
-                EveSkillList = EveSkillObject.GetSkills(EveSkillsLocalXML);                
-            }
-            else
-            {
-                MessageBox.Show("Updating Skill List.");
-                UpdateLocalEveSkillsXML();
-            }
+                listMainView.Items.Add("No userdata loaded, please add your corp API information.");
+            }            
             if (File.Exists(CharacterDataXML))
             {
-                LoadLocalDataSheet();
-                foreach (CharacterSheet item in EveCharactersList)
-                {
-                    listMainView.Items.Add(item.name + "\t" + item.forumName);
-                }
-            
+                LoadLocalDataSheet();            
             }
             else
             {
@@ -122,38 +146,32 @@ namespace Argus
                 XElement DatasheetRoot = new XElement("characters");
                 CreateDatasheetXML.Add(DatasheetRoot);
                 CreateDatasheetXML.Save(CharacterDataXML); 
-            }
-
-            /*
-            _dgMainView.DataSource = CharacterDataGrid;
-            _dgMainView.AutoGenerateColumns = false;
-            DataGridViewTextBoxColumn ownerColumn = new DataGridViewTextBoxColumn();
-            ownerColumn.DataPropertyName = "forumName";
-            ownerColumn.HeaderText = "Forum Owner";
-            DataGridViewTextBoxColumn nameColumn = new DataGridViewTextBoxColumn();
-            nameColumn.DataPropertyName = "name";
-            nameColumn.HeaderText = "Character Name";
-            DataGridViewTextBoxColumn corpnameColumn = new DataGridViewTextBoxColumn();
-            corpnameColumn.DataPropertyName = "corporationName";
-            corpnameColumn.HeaderText = "Corporation Name";
-            DataGridViewTextBoxColumn startdateColumn = new DataGridViewTextBoxColumn();
-            startdateColumn.DataPropertyName = "startDateTime";
-            startdateColumn.HeaderText = "Start Date";
-            DataGridViewTextBoxColumn logoffdateColumn = new DataGridViewTextBoxColumn();
-            logoffdateColumn.DataPropertyName = "logoffDateTime";
-            logoffdateColumn.HeaderText = "Last Time Logged In";
-            */
-
+            }  
             foreach (CharacterSheet pilot in EveCharactersList)
             {
+                StringBuilder pilot_titles_build = new StringBuilder();
+                foreach (CharacterSheet.CharacterTitles title in pilot.titles)
+                {
+                    pilot_titles_build.Append(title.titleName).Append(", ");                    
+                }
+                string pilot_titles = pilot_titles_build.ToString();
                 CorpData this_pilots_corp = CorporationDataList.Find(delegate(CorpData s) { return s.corporationID == pilot.corporationID; });
-                CorpData.Member this_pilots_corp_name = this_pilots_corp.memberList.Find(delegate (CorpData.Member s) {return s.characterID == pilot.characterID; });
-                //CharacterDataGrid.Add(new CharacterView(pilot.name, pilot.corporationName, pilot.forumName, this_pilots_corp_name.startDateTime, this_pilots_corp_name.logoffDateTime, pilot.skills, pilot.titles));
+                if (this_pilots_corp != null)
+                {
+                    CorpData.Member this_pilots_corp_name = this_pilots_corp.memberList.Find(delegate(CorpData.Member s) { return s.characterID == pilot.characterID; });
+                    CharacterDataGrid.Add(new CharacterView(pilot.name, pilot.corporationName, pilot.forumName, this_pilots_corp_name.startDateTime, this_pilots_corp_name.logoffDateTime, pilot.skills, pilot_titles));
+                }
+                else
+                {
+                    CharacterDataGrid.Add(new CharacterView(pilot.name, pilot.corporationName, pilot.forumName, Convert.ToDateTime("1/1/1000"), Convert.ToDateTime("1/1/1000"), pilot.skills, pilot_titles));  
+                }                
             }
-            //_dgMainView.DataSource = CharacterDataGrid;
-            foreach (CharacterSheet item in EveCharactersList)
+            BindingSource charsource = new BindingSource();
+            charsource.DataSource = CharacterDataGrid;
+            _dgMainView.DataSource = charsource;
+            foreach (CharacterView item in CharacterDataGrid)
             {
-                listMainView.Items.Add(item.name + "\t" + item.forumName);
+                listCharacters.Items.Add(item.forumName + "\t\t" + item.name);
             }
             
         }
@@ -271,6 +289,7 @@ namespace Argus
                         new XAttribute("typeID", skill.typeID)));
             }
             WriteLocalSkills.Save(EveSkillsLocalXML);
+            EveSkillList = EveSkillObject.GetSkills(EveSkillsLocalXML);
         }
         private void UpdateLocalCorpXML() //grabs remote api data and saves it locally; updates all CorpXML Files
         {
@@ -551,6 +570,16 @@ namespace Argus
                 LoadFormData();
             }
         }
+        private void DeleteCharacter()
+        {
+            XDocument RemoveCharacter = XDocument.Load(CharacterDataXML);
+            int indexofPilot = listCharacters.SelectedIndex;
+            CharacterSheet pilotToRemove = EveCharactersList[indexofPilot];
+            RemoveCharacter.Descendants("characters").Elements("pilot").Where(p => p.Attribute("characterID") != null && (string)p.Attribute("characterID").Value == pilotToRemove.characterID.ToString()).Remove();
+            listCharacters.Items.RemoveAt(indexofPilot);
+            RemoveCharacter.Save(CharacterDataXML);
+            LoadFormData();
+        }
         private void cb_LockCorpUpdate_CheckedChanged(object sender, EventArgs e)
         {
             if (cb_LockAddCorporation.Checked == false)
@@ -619,6 +648,13 @@ namespace Argus
         private void btnRemoveCorp_Click(object sender, EventArgs e)
         {
             RemoveCorp();
+        }
+        private void btnDeleteCharacter_Click(object sender, EventArgs e)
+        {
+            if (listCharacters.Items.Count > 0)
+            {
+                DeleteCharacter();
+            }
         }
 
     }

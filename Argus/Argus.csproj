@@ -50,6 +50,7 @@
     <Compile Include="CharacterSheet.cs" />
     <Compile Include="CharacterView.cs" />
     <Compile Include="ListItem.cs" />
+    <Compile Include="SortableBindingList.cs" />
     <Compile Include="UserData.cs" />
     <Compile Include="SkillSheet.cs" />
     <Compile Include="CorpData.cs" />

@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             this.btn_ImportData = new System.Windows.Forms.Button();
-            this.listMainView = new System.Windows.Forms.ListBox();
             this.btn_AddCorp = new System.Windows.Forms.Button();
             this.tabcontrol_Main = new System.Windows.Forms.TabControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this._dgMainView = new System.Windows.Forms.DataGridView();
             this.btn_RefreshList = new System.Windows.Forms.Button();
+            this.listMainView = new System.Windows.Forms.ListBox();
             this.tabSettings = new System.Windows.Forms.TabPage();
             this.lbl_CorpNameRemove = new System.Windows.Forms.Label();
             this.btnRemoveCorp = new System.Windows.Forms.Button();
@@ -45,16 +46,17 @@
             this.cb_LockAddCorporation = new System.Windows.Forms.CheckBox();
             this.tb_Corp_vCode = new System.Windows.Forms.TextBox();
             this.tb_CorpKeyID = new System.Windows.Forms.TextBox();
-            this._dgMainView = new System.Windows.Forms.DataGridView();
+            this.listCharacters = new System.Windows.Forms.ListBox();
+            this.btnDeleteCharacter = new System.Windows.Forms.Button();
             this.tabcontrol_Main.SuspendLayout();
             this.tabMain.SuspendLayout();
-            this.tabSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._dgMainView)).BeginInit();
+            this.tabSettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_ImportData
             // 
-            this.btn_ImportData.Location = new System.Drawing.Point(656, 6);
+            this.btn_ImportData.Location = new System.Drawing.Point(533, 5);
             this.btn_ImportData.Name = "btn_ImportData";
             this.btn_ImportData.Size = new System.Drawing.Size(140, 30);
             this.btn_ImportData.TabIndex = 0;
@@ -62,17 +64,9 @@
             this.btn_ImportData.UseVisualStyleBackColor = true;
             this.btn_ImportData.Click += new System.EventHandler(this.btn_ImportData_Click);
             // 
-            // listMainView
-            // 
-            this.listMainView.FormattingEnabled = true;
-            this.listMainView.Location = new System.Drawing.Point(357, 86);
-            this.listMainView.Name = "listMainView";
-            this.listMainView.Size = new System.Drawing.Size(428, 420);
-            this.listMainView.TabIndex = 1;
-            // 
             // btn_AddCorp
             // 
-            this.btn_AddCorp.Location = new System.Drawing.Point(83, 186);
+            this.btn_AddCorp.Location = new System.Drawing.Point(77, 42);
             this.btn_AddCorp.Name = "btn_AddCorp";
             this.btn_AddCorp.Size = new System.Drawing.Size(120, 30);
             this.btn_AddCorp.TabIndex = 2;
@@ -87,7 +81,7 @@
             this.tabcontrol_Main.Location = new System.Drawing.Point(12, 12);
             this.tabcontrol_Main.Name = "tabcontrol_Main";
             this.tabcontrol_Main.SelectedIndex = 0;
-            this.tabcontrol_Main.Size = new System.Drawing.Size(810, 538);
+            this.tabcontrol_Main.Size = new System.Drawing.Size(968, 538);
             this.tabcontrol_Main.TabIndex = 3;
             // 
             // tabMain
@@ -98,14 +92,29 @@
             this.tabMain.Location = new System.Drawing.Point(4, 22);
             this.tabMain.Name = "tabMain";
             this.tabMain.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMain.Size = new System.Drawing.Size(802, 512);
+            this.tabMain.Size = new System.Drawing.Size(960, 512);
             this.tabMain.TabIndex = 0;
             this.tabMain.Text = "Main View";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // _dgMainView
+            // 
+            this._dgMainView.AllowUserToAddRows = false;
+            this._dgMainView.AllowUserToDeleteRows = false;
+            this._dgMainView.AllowUserToOrderColumns = true;
+            this._dgMainView.AllowUserToResizeRows = false;
+            this._dgMainView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this._dgMainView.Location = new System.Drawing.Point(6, 6);
+            this._dgMainView.Name = "_dgMainView";
+            this._dgMainView.ReadOnly = true;
+            this._dgMainView.RowHeadersVisible = false;
+            this._dgMainView.RowHeadersWidth = 100;
+            this._dgMainView.Size = new System.Drawing.Size(948, 363);
+            this._dgMainView.TabIndex = 3;
+            // 
             // btn_RefreshList
             // 
-            this.btn_RefreshList.Location = new System.Drawing.Point(656, 6);
+            this.btn_RefreshList.Location = new System.Drawing.Point(663, 415);
             this.btn_RefreshList.Name = "btn_RefreshList";
             this.btn_RefreshList.Size = new System.Drawing.Size(140, 30);
             this.btn_RefreshList.TabIndex = 2;
@@ -113,8 +122,18 @@
             this.btn_RefreshList.UseVisualStyleBackColor = true;
             this.btn_RefreshList.Click += new System.EventHandler(this.btn_RefreshList_Click);
             // 
+            // listMainView
+            // 
+            this.listMainView.FormattingEnabled = true;
+            this.listMainView.Location = new System.Drawing.Point(6, 375);
+            this.listMainView.Name = "listMainView";
+            this.listMainView.Size = new System.Drawing.Size(323, 82);
+            this.listMainView.TabIndex = 1;
+            // 
             // tabSettings
             // 
+            this.tabSettings.Controls.Add(this.btnDeleteCharacter);
+            this.tabSettings.Controls.Add(this.listCharacters);
             this.tabSettings.Controls.Add(this.lbl_CorpNameRemove);
             this.tabSettings.Controls.Add(this.btnRemoveCorp);
             this.tabSettings.Controls.Add(this.cbRemoveCorp);
@@ -130,7 +149,7 @@
             this.tabSettings.Location = new System.Drawing.Point(4, 22);
             this.tabSettings.Name = "tabSettings";
             this.tabSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSettings.Size = new System.Drawing.Size(802, 512);
+            this.tabSettings.Size = new System.Drawing.Size(960, 512);
             this.tabSettings.TabIndex = 1;
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
@@ -138,7 +157,7 @@
             // lbl_CorpNameRemove
             // 
             this.lbl_CorpNameRemove.AutoSize = true;
-            this.lbl_CorpNameRemove.Location = new System.Drawing.Point(454, 458);
+            this.lbl_CorpNameRemove.Location = new System.Drawing.Point(7, 221);
             this.lbl_CorpNameRemove.Name = "lbl_CorpNameRemove";
             this.lbl_CorpNameRemove.Size = new System.Drawing.Size(150, 13);
             this.lbl_CorpNameRemove.TabIndex = 12;
@@ -146,7 +165,7 @@
             // 
             // btnRemoveCorp
             // 
-            this.btnRemoveCorp.Location = new System.Drawing.Point(653, 419);
+            this.btnRemoveCorp.Location = new System.Drawing.Point(10, 270);
             this.btnRemoveCorp.Name = "btnRemoveCorp";
             this.btnRemoveCorp.Size = new System.Drawing.Size(140, 30);
             this.btnRemoveCorp.TabIndex = 11;
@@ -157,14 +176,14 @@
             // cbRemoveCorp
             // 
             this.cbRemoveCorp.FormattingEnabled = true;
-            this.cbRemoveCorp.Location = new System.Drawing.Point(610, 455);
+            this.cbRemoveCorp.Location = new System.Drawing.Point(10, 243);
             this.cbRemoveCorp.Name = "cbRemoveCorp";
             this.cbRemoveCorp.Size = new System.Drawing.Size(183, 21);
             this.cbRemoveCorp.TabIndex = 10;
             // 
             // btn_UpdateCorpDataXML
             // 
-            this.btn_UpdateCorpDataXML.Location = new System.Drawing.Point(656, 78);
+            this.btn_UpdateCorpDataXML.Location = new System.Drawing.Point(533, 77);
             this.btn_UpdateCorpDataXML.Name = "btn_UpdateCorpDataXML";
             this.btn_UpdateCorpDataXML.Size = new System.Drawing.Size(140, 30);
             this.btn_UpdateCorpDataXML.TabIndex = 9;
@@ -174,7 +193,7 @@
             // 
             // btn_UpdateSkillTree
             // 
-            this.btn_UpdateSkillTree.Location = new System.Drawing.Point(656, 42);
+            this.btn_UpdateSkillTree.Location = new System.Drawing.Point(533, 41);
             this.btn_UpdateSkillTree.Name = "btn_UpdateSkillTree";
             this.btn_UpdateSkillTree.Size = new System.Drawing.Size(140, 30);
             this.btn_UpdateSkillTree.TabIndex = 8;
@@ -185,7 +204,7 @@
             // lbl_Corp_vCode
             // 
             this.lbl_Corp_vCode.AutoSize = true;
-            this.lbl_Corp_vCode.Location = new System.Drawing.Point(11, 250);
+            this.lbl_Corp_vCode.Location = new System.Drawing.Point(5, 106);
             this.lbl_Corp_vCode.Name = "lbl_Corp_vCode";
             this.lbl_Corp_vCode.Size = new System.Drawing.Size(66, 13);
             this.lbl_Corp_vCode.TabIndex = 7;
@@ -194,7 +213,7 @@
             // lbl_CorpKeyID
             // 
             this.lbl_CorpKeyID.AutoSize = true;
-            this.lbl_CorpKeyID.Location = new System.Drawing.Point(13, 224);
+            this.lbl_CorpKeyID.Location = new System.Drawing.Point(7, 80);
             this.lbl_CorpKeyID.Name = "lbl_CorpKeyID";
             this.lbl_CorpKeyID.Size = new System.Drawing.Size(64, 13);
             this.lbl_CorpKeyID.TabIndex = 6;
@@ -203,7 +222,7 @@
             // cb_LockAddCorporation
             // 
             this.cb_LockAddCorporation.AutoSize = true;
-            this.cb_LockAddCorporation.Location = new System.Drawing.Point(221, 194);
+            this.cb_LockAddCorporation.Location = new System.Drawing.Point(215, 50);
             this.cb_LockAddCorporation.Name = "cb_LockAddCorporation";
             this.cb_LockAddCorporation.Size = new System.Drawing.Size(62, 17);
             this.cb_LockAddCorporation.TabIndex = 5;
@@ -214,41 +233,51 @@
             // tb_Corp_vCode
             // 
             this.tb_Corp_vCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_Corp_vCode.Location = new System.Drawing.Point(83, 248);
+            this.tb_Corp_vCode.Location = new System.Drawing.Point(77, 104);
             this.tb_Corp_vCode.Name = "tb_Corp_vCode";
-            this.tb_Corp_vCode.Size = new System.Drawing.Size(500, 20);
+            this.tb_Corp_vCode.Size = new System.Drawing.Size(338, 20);
             this.tb_Corp_vCode.TabIndex = 4;
             // 
             // tb_CorpKeyID
             // 
             this.tb_CorpKeyID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_CorpKeyID.Location = new System.Drawing.Point(83, 222);
+            this.tb_CorpKeyID.Location = new System.Drawing.Point(77, 78);
             this.tb_CorpKeyID.Name = "tb_CorpKeyID";
-            this.tb_CorpKeyID.Size = new System.Drawing.Size(200, 20);
+            this.tb_CorpKeyID.Size = new System.Drawing.Size(120, 20);
             this.tb_CorpKeyID.TabIndex = 3;
             // 
-            // _dgMainView
+            // listCharacters
             // 
-            this._dgMainView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this._dgMainView.Location = new System.Drawing.Point(6, 6);
-            this._dgMainView.Name = "_dgMainView";
-            this._dgMainView.Size = new System.Drawing.Size(271, 290);
-            this._dgMainView.TabIndex = 3;
+            this.listCharacters.FormattingEnabled = true;
+            this.listCharacters.Location = new System.Drawing.Point(418, 153);
+            this.listCharacters.Name = "listCharacters";
+            this.listCharacters.Size = new System.Drawing.Size(255, 277);
+            this.listCharacters.TabIndex = 13;
+            // 
+            // btnDeleteCharacter
+            // 
+            this.btnDeleteCharacter.Location = new System.Drawing.Point(533, 436);
+            this.btnDeleteCharacter.Name = "btnDeleteCharacter";
+            this.btnDeleteCharacter.Size = new System.Drawing.Size(140, 30);
+            this.btnDeleteCharacter.TabIndex = 14;
+            this.btnDeleteCharacter.Text = "Remove Character";
+            this.btnDeleteCharacter.UseVisualStyleBackColor = true;
+            this.btnDeleteCharacter.Click += new System.EventHandler(this.btnDeleteCharacter_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(834, 562);
+            this.ClientSize = new System.Drawing.Size(984, 562);
             this.Controls.Add(this.tabcontrol_Main);
             this.Name = "frmMain";
             this.Text = "Argus";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.tabcontrol_Main.ResumeLayout(false);
             this.tabMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this._dgMainView)).EndInit();
             this.tabSettings.ResumeLayout(false);
             this.tabSettings.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this._dgMainView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -256,7 +285,6 @@
         #endregion
 
         private System.Windows.Forms.Button btn_ImportData;
-        private System.Windows.Forms.ListBox listMainView;
         private System.Windows.Forms.Button btn_AddCorp;
         private System.Windows.Forms.TabControl tabcontrol_Main;
         private System.Windows.Forms.TabPage tabMain;
@@ -273,6 +301,9 @@
         private System.Windows.Forms.Button btnRemoveCorp;
         private System.Windows.Forms.Label lbl_CorpNameRemove;
         private System.Windows.Forms.DataGridView _dgMainView;
+        private System.Windows.Forms.ListBox listMainView;
+        private System.Windows.Forms.Button btnDeleteCharacter;
+        private System.Windows.Forms.ListBox listCharacters;
     }
 }
 

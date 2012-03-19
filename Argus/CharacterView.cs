@@ -13,12 +13,14 @@ namespace Argus
         public DateTime startDateTime { get; set; }
         public DateTime logoffDateTime { get; set; }        
         public List<CharacterSheet.CharacterSkills> skills { get; set; }
-        public List<CharacterSheet.CharacterTitles> titles { get; set; }
+        public List<CharacterSheet.CharacterTitles> titlesList { get; set; }
+        //public string titles { get { return string.Join(", ", titlesList.ToArray()); } }
+        public string titles { get; set; }
 
         public CharacterView()
         { }
 
-        public CharacterView(string _name, string _cname, string _fname, DateTime _start, DateTime _logoff, List<CharacterSheet.CharacterSkills> _skills, List<CharacterSheet.CharacterTitles> _titles)
+        public CharacterView(string _name, string _cname, string _fname, DateTime _start, DateTime _logoff, List<CharacterSheet.CharacterSkills> _skills, string _titles)
         {
             this.name = _name;
             this.corporationName = _cname;
@@ -27,6 +29,6 @@ namespace Argus
             this.logoffDateTime = _logoff;
             this.skills = _skills;
             this.titles = _titles;
-        }
+        }        
     }
 }

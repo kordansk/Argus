@@ -67,7 +67,7 @@ namespace Argus
             {
                 this.titleID = _tid;
                 this.titleName = _tname;
-            }
+            }           
         }
         public class CharacterSkills
         {
@@ -82,6 +82,7 @@ namespace Argus
                 this.level = _level;
                 this.name = _name;
             }
+            
             public CharacterSkills(int _tid, int _sp, int _level)
             {
                 this.typeID = _tid;
