@@ -8,11 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml.Linq;
+using System.Threading;
 
 namespace Argus
 {   
     public partial class frmMain : Form
     {
+        
+        #region Globals
         public List<ImportedData> CSVList = new List<ImportedData>();
         public List<CorpData> CorporationDataList = new List<CorpData>();
         public List<SkillSheet> EveSkillList = new List<SkillSheet>();
@@ -27,6 +30,7 @@ namespace Argus
         public string UserDataLocalXML = "userdata.xml";
         public string EVE_API_RemoteXML = "https://api.eveonline.com";
         public string ImportFileNameXML;
+        #endregion
         
         public frmMain()
         {
@@ -89,6 +93,7 @@ namespace Argus
             if (File.Exists(EveSkillsLocalXML))
             {
                 EveSkillList = EveSkillObject.GetSkills(EveSkillsLocalXML);
+                listMainView.Items.Add("Loading Skill List.");
             }
             else
             {
@@ -108,6 +113,7 @@ namespace Argus
                             xe.Attribute("corp_vCode").Value,
                             xe.Attribute("corpdataxml").Value));
                     }
+                    listMainView.Items.Add("Loading User Data.");
                 }
                 if (UserInfoList.Count > 0)
                 {
@@ -119,6 +125,7 @@ namespace Argus
                     foreach (CorpData corp in CorporationDataList)
                     {
                         CorpDropDownList.Add(new ListItem(corp.corporationName.ToString(), UserInfoList[i].corp_KeyID.ToString()));
+                        listMainView.Items.Add("Loading corporation data for: " + corp.corporationName);
                         i++;
                     }
                 }
@@ -134,18 +141,20 @@ namespace Argus
             }
             else
             {
-                listMainView.Items.Add("No userdata loaded, please add your corp API information.");
+                listMainView.Items.Add("No user data loaded, please add your corp API information.");
             }            
             if (File.Exists(CharacterDataXML))
             {
-                LoadLocalDataSheet();            
+                LoadLocalDataSheet();
+                listMainView.Items.Add("Loading all character data.");
             }
             else
             {
                 XDocument CreateDatasheetXML = new XDocument();
                 XElement DatasheetRoot = new XElement("characters");
                 CreateDatasheetXML.Add(DatasheetRoot);
-                CreateDatasheetXML.Save(CharacterDataXML); 
+                CreateDatasheetXML.Save(CharacterDataXML);
+                listMainView.Items.Add("No character data currently available.");
             }  
             foreach (CharacterSheet pilot in EveCharactersList)
             {
@@ -154,16 +163,16 @@ namespace Argus
                 {
                     pilot_titles_build.Append(title.titleName).Append(", ");                    
                 }
-                string pilot_titles = pilot_titles_build.ToString();
+                string str_pilot_titles = pilot_titles_build.ToString();
                 CorpData this_pilots_corp = CorporationDataList.Find(delegate(CorpData s) { return s.corporationID == pilot.corporationID; });
                 if (this_pilots_corp != null)
                 {
                     CorpData.Member this_pilots_corp_name = this_pilots_corp.memberList.Find(delegate(CorpData.Member s) { return s.characterID == pilot.characterID; });
-                    CharacterDataGrid.Add(new CharacterView(pilot.name, pilot.corporationName, pilot.forumName, this_pilots_corp_name.startDateTime, this_pilots_corp_name.logoffDateTime, pilot.skills, pilot_titles));
+                    CharacterDataGrid.Add(new CharacterView(pilot.name, pilot.corporationName, pilot.forumName, this_pilots_corp_name.startDateTime, this_pilots_corp_name.logoffDateTime, pilot.skills, str_pilot_titles, pilot.titles));
                 }
                 else
                 {
-                    CharacterDataGrid.Add(new CharacterView(pilot.name, pilot.corporationName, pilot.forumName, Convert.ToDateTime("1/1/1000"), Convert.ToDateTime("1/1/1000"), pilot.skills, pilot_titles));  
+                    CharacterDataGrid.Add(new CharacterView(pilot.name, pilot.corporationName, pilot.forumName, Convert.ToDateTime("1/1/1000"), Convert.ToDateTime("1/1/1000"), pilot.skills, str_pilot_titles, pilot.titles));  
                 }                
             }
             BindingSource charsource = new BindingSource();
@@ -173,7 +182,7 @@ namespace Argus
             {
                 listCharacters.Items.Add(item.forumName + "\t\t" + item.name);
             }
-            
+            listMainView.Items.Add("Total characters loaded: " + CharacterDataGrid.Count);
         }
         private void LoadCorpData(string file)
         {
@@ -362,7 +371,8 @@ namespace Argus
                             new XAttribute("shipType", members.shipType)
                          ));
                 }
-                WriteCorpData.Save(users.corp_corpdata_xml);
+                listMainView.Items.Add("Corporation Updated: " + temp_corp_vals.corporationName);
+                WriteCorpData.Save(users.corp_corpdata_xml);                
             }
         }
         private void AddToDatasetXML()
@@ -440,7 +450,7 @@ namespace Argus
                 }
             }
             //Adding to dataset here.   
-            // if updatedatasheet doesnt contain a reference to a characterid in the list_updatechars, 
+            // if updatedatasheet doesn't contain a reference to a characterid in the list_updatechars, 
             // add it to the sheet; else delete that node and add new data to update list_updatechars and EveCharactersList
             XDocument UpdateDataSheet = XDocument.Load(CharacterDataXML);
             List<long> characterID_duplicates = new List<long>();
@@ -458,6 +468,8 @@ namespace Argus
             {
                 UpdateDataSheet.Descendants("pilot").Where(p => p.Attribute("characterID") != null && (string)p.Attribute("characterID") == id.ToString()).Remove();
             }
+            listMainView.Items.Add("Pilots updated: " + characterID_duplicates.Count);
+            listMainView.Items.Add("New Pilots added: " + (list_updatechars.Count-characterID_duplicates.Count));
             characterID_duplicates.Clear();
             UpdateDataSheet.Save(CharacterDataXML);
             foreach (CharacterSheet pilot in list_updatechars)
@@ -497,7 +509,7 @@ namespace Argus
             }
             UpdateDataSheet.Save(CharacterDataXML);
             LoadFormData();
-        }
+        } // adds pilots to dataset.xml
         private void AddDataFromCSV()
         {
             char[] seps = { ',' };
@@ -512,7 +524,7 @@ namespace Argus
             }
             AddToDatasetXML();
         } //grabs all new user data files and loads them into memory from CSV file
-        private void AddCorp()
+        private void AddCorpAPI()
         {
             string corpdataFileName = "corpdata_" + tb_CorpKeyID.Text + ".xml";
             if (!File.Exists(UserDataLocalXML))
@@ -555,8 +567,8 @@ namespace Argus
                         xe.Attribute("corp_vCode").Value,
                         xe.Attribute("corpdataxml").Value));
                 }
-            }
-        }
+            }            
+        } // adds corps to the dataset
         private void RemoveCorp()
         {
             if (CorpDropDownList.Count > 0)
@@ -569,7 +581,7 @@ namespace Argus
                 cbRemoveCorp.Items.RemoveAt(cbRemoveCorp.SelectedIndex);
                 LoadFormData();
             }
-        }
+        } // removes corps form the dataset
         private void DeleteCharacter()
         {
             XDocument RemoveCharacter = XDocument.Load(CharacterDataXML);
@@ -579,7 +591,7 @@ namespace Argus
             listCharacters.Items.RemoveAt(indexofPilot);
             RemoveCharacter.Save(CharacterDataXML);
             LoadFormData();
-        }
+        } // deletes characters from the dataset
         private void cb_LockCorpUpdate_CheckedChanged(object sender, EventArgs e)
         {
             if (cb_LockAddCorporation.Checked == false)
@@ -599,7 +611,7 @@ namespace Argus
         {
             if (tb_CorpKeyID.Text != "" & tb_Corp_vCode.Text != "")
             {
-                AddCorp();
+                AddCorpAPI();
                 UpdateLocalCorpXML();
                 LoadFormData();
             }
@@ -644,7 +656,7 @@ namespace Argus
         private void RefreshData()
         {
             LoadFormData();
-        }
+        } //reloads all information into memory
         private void btnRemoveCorp_Click(object sender, EventArgs e)
         {
             RemoveCorp();
@@ -656,6 +668,9 @@ namespace Argus
                 DeleteCharacter();
             }
         }
-
+        private void btnClearListmainView_Click(object sender, EventArgs e)
+        {
+            listMainView.Items.Clear();
+        }
     }
 }
