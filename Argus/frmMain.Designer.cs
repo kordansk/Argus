@@ -32,6 +32,7 @@
             this.btn_AddCorp = new System.Windows.Forms.Button();
             this.tabcontrol_Main = new System.Windows.Forms.TabControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.btnClearListmainView = new System.Windows.Forms.Button();
             this._dgMainView = new System.Windows.Forms.DataGridView();
             this.btn_RefreshList = new System.Windows.Forms.Button();
             this.listMainView = new System.Windows.Forms.ListBox();
@@ -48,7 +49,6 @@
             this.cb_LockAddCorporation = new System.Windows.Forms.CheckBox();
             this.tb_Corp_vCode = new System.Windows.Forms.TextBox();
             this.tb_CorpKeyID = new System.Windows.Forms.TextBox();
-            this.btnClearListmainView = new System.Windows.Forms.Button();
             this.tabcontrol_Main.SuspendLayout();
             this.tabMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._dgMainView)).BeginInit();
@@ -77,9 +77,11 @@
             // 
             // tabcontrol_Main
             // 
+            this.tabcontrol_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tabcontrol_Main.Controls.Add(this.tabMain);
             this.tabcontrol_Main.Controls.Add(this.tabSettings);
-            this.tabcontrol_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabcontrol_Main.Location = new System.Drawing.Point(0, 0);
             this.tabcontrol_Main.Name = "tabcontrol_Main";
             this.tabcontrol_Main.SelectedIndex = 0;
@@ -100,14 +102,27 @@
             this.tabMain.Text = "Main View";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // btnClearListmainView
+            // 
+            this.btnClearListmainView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnClearListmainView.Location = new System.Drawing.Point(149, 498);
+            this.btnClearListmainView.Name = "btnClearListmainView";
+            this.btnClearListmainView.Size = new System.Drawing.Size(140, 30);
+            this.btnClearListmainView.TabIndex = 4;
+            this.btnClearListmainView.Text = "Clear Information Box";
+            this.btnClearListmainView.UseVisualStyleBackColor = true;
+            this.btnClearListmainView.Click += new System.EventHandler(this.btnClearListmainView_Click);
+            // 
             // _dgMainView
             // 
             this._dgMainView.AllowUserToAddRows = false;
             this._dgMainView.AllowUserToDeleteRows = false;
             this._dgMainView.AllowUserToOrderColumns = true;
             this._dgMainView.AllowUserToResizeRows = false;
+            this._dgMainView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this._dgMainView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this._dgMainView.Dock = System.Windows.Forms.DockStyle.Top;
             this._dgMainView.Location = new System.Drawing.Point(3, 3);
             this._dgMainView.Name = "_dgMainView";
             this._dgMainView.ReadOnly = true;
@@ -118,6 +133,7 @@
             // 
             // btn_RefreshList
             // 
+            this.btn_RefreshList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btn_RefreshList.Location = new System.Drawing.Point(3, 498);
             this.btn_RefreshList.Name = "btn_RefreshList";
             this.btn_RefreshList.Size = new System.Drawing.Size(140, 30);
@@ -128,6 +144,7 @@
             // 
             // listMainView
             // 
+            this.listMainView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.listMainView.FormattingEnabled = true;
             this.listMainView.Location = new System.Drawing.Point(3, 372);
             this.listMainView.Name = "listMainView";
@@ -267,16 +284,6 @@
             this.tb_CorpKeyID.Name = "tb_CorpKeyID";
             this.tb_CorpKeyID.Size = new System.Drawing.Size(120, 20);
             this.tb_CorpKeyID.TabIndex = 3;
-            // 
-            // btnClearListmainView
-            // 
-            this.btnClearListmainView.Location = new System.Drawing.Point(149, 498);
-            this.btnClearListmainView.Name = "btnClearListmainView";
-            this.btnClearListmainView.Size = new System.Drawing.Size(140, 30);
-            this.btnClearListmainView.TabIndex = 4;
-            this.btnClearListmainView.Text = "Clear Information Box";
-            this.btnClearListmainView.UseVisualStyleBackColor = true;
-            this.btnClearListmainView.Click += new System.EventHandler(this.btnClearListmainView_Click);
             // 
             // frmMain
             // 
