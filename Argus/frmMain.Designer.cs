@@ -36,6 +36,8 @@
             this.btn_RefreshList = new System.Windows.Forms.Button();
             this.listMainView = new System.Windows.Forms.ListBox();
             this.tabSettings = new System.Windows.Forms.TabPage();
+            this.btnDeleteCharacter = new System.Windows.Forms.Button();
+            this.listCharacters = new System.Windows.Forms.ListBox();
             this.lbl_CorpNameRemove = new System.Windows.Forms.Label();
             this.btnRemoveCorp = new System.Windows.Forms.Button();
             this.cbRemoveCorp = new System.Windows.Forms.ComboBox();
@@ -46,8 +48,6 @@
             this.cb_LockAddCorporation = new System.Windows.Forms.CheckBox();
             this.tb_Corp_vCode = new System.Windows.Forms.TextBox();
             this.tb_CorpKeyID = new System.Windows.Forms.TextBox();
-            this.listCharacters = new System.Windows.Forms.ListBox();
-            this.btnDeleteCharacter = new System.Windows.Forms.Button();
             this.tabcontrol_Main.SuspendLayout();
             this.tabMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._dgMainView)).BeginInit();
@@ -76,23 +76,25 @@
             // 
             // tabcontrol_Main
             // 
+            this.tabcontrol_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tabcontrol_Main.Controls.Add(this.tabMain);
             this.tabcontrol_Main.Controls.Add(this.tabSettings);
-            this.tabcontrol_Main.Location = new System.Drawing.Point(12, 12);
+            this.tabcontrol_Main.Location = new System.Drawing.Point(4, 50);
             this.tabcontrol_Main.Name = "tabcontrol_Main";
             this.tabcontrol_Main.SelectedIndex = 0;
-            this.tabcontrol_Main.Size = new System.Drawing.Size(968, 538);
+            this.tabcontrol_Main.Size = new System.Drawing.Size(985, 444);
             this.tabcontrol_Main.TabIndex = 3;
             // 
             // tabMain
             // 
+            this.tabMain.AllowDrop = true;
             this.tabMain.Controls.Add(this._dgMainView);
-            this.tabMain.Controls.Add(this.btn_RefreshList);
-            this.tabMain.Controls.Add(this.listMainView);
             this.tabMain.Location = new System.Drawing.Point(4, 22);
             this.tabMain.Name = "tabMain";
             this.tabMain.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMain.Size = new System.Drawing.Size(960, 512);
+            this.tabMain.Size = new System.Drawing.Size(977, 418);
             this.tabMain.TabIndex = 0;
             this.tabMain.Text = "Main View";
             this.tabMain.UseVisualStyleBackColor = true;
@@ -103,18 +105,22 @@
             this._dgMainView.AllowUserToDeleteRows = false;
             this._dgMainView.AllowUserToOrderColumns = true;
             this._dgMainView.AllowUserToResizeRows = false;
+            this._dgMainView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this._dgMainView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this._dgMainView.Location = new System.Drawing.Point(6, 6);
             this._dgMainView.Name = "_dgMainView";
             this._dgMainView.ReadOnly = true;
             this._dgMainView.RowHeadersVisible = false;
             this._dgMainView.RowHeadersWidth = 100;
-            this._dgMainView.Size = new System.Drawing.Size(948, 363);
+            this._dgMainView.Size = new System.Drawing.Size(965, 409);
             this._dgMainView.TabIndex = 3;
             // 
             // btn_RefreshList
             // 
-            this.btn_RefreshList.Location = new System.Drawing.Point(663, 415);
+            this.btn_RefreshList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_RefreshList.Location = new System.Drawing.Point(839, 25);
             this.btn_RefreshList.Name = "btn_RefreshList";
             this.btn_RefreshList.Size = new System.Drawing.Size(140, 30);
             this.btn_RefreshList.TabIndex = 2;
@@ -124,10 +130,11 @@
             // 
             // listMainView
             // 
+            this.listMainView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.listMainView.FormattingEnabled = true;
-            this.listMainView.Location = new System.Drawing.Point(6, 375);
+            this.listMainView.Location = new System.Drawing.Point(510, 12);
             this.listMainView.Name = "listMainView";
-            this.listMainView.Size = new System.Drawing.Size(323, 82);
+            this.listMainView.Size = new System.Drawing.Size(323, 43);
             this.listMainView.TabIndex = 1;
             // 
             // tabSettings
@@ -153,6 +160,24 @@
             this.tabSettings.TabIndex = 1;
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // btnDeleteCharacter
+            // 
+            this.btnDeleteCharacter.Location = new System.Drawing.Point(533, 436);
+            this.btnDeleteCharacter.Name = "btnDeleteCharacter";
+            this.btnDeleteCharacter.Size = new System.Drawing.Size(140, 30);
+            this.btnDeleteCharacter.TabIndex = 14;
+            this.btnDeleteCharacter.Text = "Remove Character";
+            this.btnDeleteCharacter.UseVisualStyleBackColor = true;
+            this.btnDeleteCharacter.Click += new System.EventHandler(this.btnDeleteCharacter_Click);
+            // 
+            // listCharacters
+            // 
+            this.listCharacters.FormattingEnabled = true;
+            this.listCharacters.Location = new System.Drawing.Point(418, 153);
+            this.listCharacters.Name = "listCharacters";
+            this.listCharacters.Size = new System.Drawing.Size(255, 277);
+            this.listCharacters.TabIndex = 13;
             // 
             // lbl_CorpNameRemove
             // 
@@ -246,29 +271,13 @@
             this.tb_CorpKeyID.Size = new System.Drawing.Size(120, 20);
             this.tb_CorpKeyID.TabIndex = 3;
             // 
-            // listCharacters
-            // 
-            this.listCharacters.FormattingEnabled = true;
-            this.listCharacters.Location = new System.Drawing.Point(418, 153);
-            this.listCharacters.Name = "listCharacters";
-            this.listCharacters.Size = new System.Drawing.Size(255, 277);
-            this.listCharacters.TabIndex = 13;
-            // 
-            // btnDeleteCharacter
-            // 
-            this.btnDeleteCharacter.Location = new System.Drawing.Point(533, 436);
-            this.btnDeleteCharacter.Name = "btnDeleteCharacter";
-            this.btnDeleteCharacter.Size = new System.Drawing.Size(140, 30);
-            this.btnDeleteCharacter.TabIndex = 14;
-            this.btnDeleteCharacter.Text = "Remove Character";
-            this.btnDeleteCharacter.UseVisualStyleBackColor = true;
-            this.btnDeleteCharacter.Click += new System.EventHandler(this.btnDeleteCharacter_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 562);
+            this.ClientSize = new System.Drawing.Size(1001, 506);
+            this.Controls.Add(this.btn_RefreshList);
+            this.Controls.Add(this.listMainView);
             this.Controls.Add(this.tabcontrol_Main);
             this.Name = "frmMain";
             this.Text = "Argus";
